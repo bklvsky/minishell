@@ -29,7 +29,7 @@ PARSING AT THE TOKEN LEVEL
 
 if "<" or ">" next word is a name of file 
 if next sym == current - append mode in redirect output
-						reading from shell in input as if it was in double quotes
+						reading from shell in input as if it was in double quoted
 open file and save in fd_in/fd_out of current token [open() flags depend on number of >>]
 (if it can't be opened -> error exit with name of file as an identificator)
 if "|" tokens should be placed in a linked list and pipex will be used
@@ -44,7 +44,52 @@ if == builtin -> just save it as a token and move on with parsing
 
 #include "parser.h"
 
+
+/*new_token() -> allocate new token and link it with a current one*/
+/*manage_redirections -> new fds in current token structure*/
+/*manage pipes -> if t_list *tokens->next means there is a pipe
+		while tokens != NULL
+			if next
+				pipe()
+			if (!built_in)
+				fork()
+			else
+				built_in_management
+			tokens = tokens->next*/
+
 int		parser(char *line)
 {
+	int			quoted_flag;
+	int			i;
 
+	i = -1;
+	quoted_flag = 0;
+	while (line[++i] && line[i] != EOF)
+	{
+		if (line[i] == '\'' && !quoted_flag)
+			quoted_flag = SINGLE_QUOTE;
+		else if (line[i] == '"' && !quoted_flag)
+			quoted_flag = DOUBLE_QUOTE;
+		else if ((line[i] == '\'' && quoted_flag == SINGLE_QUOTE )|| \
+			(line[i] == '"' || quoted_flag == DOUBLE_QUOTE))
+			quoted_flag = 0;
+		else if (line[i] != '|' || quoted_flag)
+			write_in_token();
+		else
+			new_token();
+	/*		
+			it's from the next step
+	
+		while (line[i] && line[i] == ' ')
+			i++;
+		if (!line[i])
+			break ;
+		if (line[i] == '>' || line[i] == '<')
+			manage_redirections();
+		else if (line[i] == '|')
+		*/
+
+	}
+	if (quoted_flag)
+		error_exit();
 }

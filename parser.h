@@ -1,12 +1,8 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-typedef struct s_parse
-{
-	int			single_quoted;
-	int			double_quoted;
-	int			backslash;
-}				t_parse;
+# define SINGLE_QUOTE 1
+# define DOUBLE_QUOTE 2
 
 typedef struct s_token
 {

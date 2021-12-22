@@ -42,7 +42,7 @@ if == builtin -> just save it as a token and move on with parsing
 
 */
 
-#include "parser.h"
+#include "./includes/parser.h"
 
 
 /*new_token() -> allocate new token and link it with a current one*/
@@ -57,10 +57,11 @@ if == builtin -> just save it as a token and move on with parsing
 				built_in_management
 			tokens = tokens->next*/
 
-int		parser(char *line)
+t_list	*parser(char *line)
 {
 	int			quoted_flag;
 	int			i;
+//	t_list		*tokens;
 
 	i = -1;
 	quoted_flag = 0;
@@ -70,7 +71,7 @@ int		parser(char *line)
 			quoted_flag = SINGLE_QUOTE;
 		else if (line[i] == '"' && !quoted_flag)
 			quoted_flag = DOUBLE_QUOTE;
-		else if ((line[i] == '\'' && quoted_flag == SINGLE_QUOTE )|| \
+		else if ((line[i] == '\'' && quoted_flag == SINGLE_QUOTE) || \
 			(line[i] == '"' || quoted_flag == DOUBLE_QUOTE))
 			quoted_flag = 0;
 		else if (line[i] != '|' || quoted_flag)

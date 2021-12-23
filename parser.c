@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/23 18:45:15 by dselmy            #+#    #+#             */
+/*   Updated: 2021/12/23 21:21:35 by dselmy           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 
 /*PARSER:
 TOKEN RECOGNITION - READ USING SHELL GRAMMAR
@@ -27,7 +39,7 @@ PARSING AT THE TOKEN LEVEL
 
 [command name][redirection in or out of file]
 
-if "<" or ">" next word is a name of file 
+if "<" or ">" next word is a name of a file 
 if next sym == current - append mode in redirect output
 						reading from shell in input as if it was in double quoted
 open file and save in fd_in/fd_out of current token [open() flags depend on number of >>]
@@ -57,40 +69,161 @@ if == builtin -> just save it as a token and move on with parsing
 				built_in_management
 			tokens = tokens->next*/
 
-t_list	*parser(char *line)
-{
-	int			quoted_flag;
-	int			i;
-//	t_list		*tokens;
 
-	i = -1;
-	quoted_flag = 0;
-	while (line[++i] && line[i] != EOF)
-	{
-		if (line[i] == '\'' && !quoted_flag)
-			quoted_flag = SINGLE_QUOTE;
-		else if (line[i] == '"' && !quoted_flag)
-			quoted_flag = DOUBLE_QUOTE;
-		else if ((line[i] == '\'' && quoted_flag == SINGLE_QUOTE) || \
-			(line[i] == '"' || quoted_flag == DOUBLE_QUOTE))
-			quoted_flag = 0;
-		else if (line[i] != '|' || quoted_flag)
-			write_in_token();
-		else
-			new_token();
 	/*		
 			it's from the next step
 	
-		while (line[i] && line[i] == ' ')
+		while (all->line[i] && all->line[i] == ' ')
 			i++;
-		if (!line[i])
+		if (!all->line[i])
 			break ;
-		if (line[i] == '>' || line[i] == '<')
+		if (all->line[i] == '>' || all->line[i] == '<')
 			manage_redirections();
-		else if (line[i] == '|')
+		else if (all->line[i] == '|')
 		*/
 
+char	*ft_strrealloc(char *old, size_t new_size)
+{
+	char	*new;
+
+	new = (char *)ft_calloc(new_size, sizeof(char));
+	if (!new)
+	{
+		free(old);
+		return (NULL);
+	}
+	ft_strlcpy(new, old, new_size);
+	free(old);
+	return (new);
+}
+
+t_lst_d	*new_token(void)
+{
+	t_token		*new_token;
+	t_lst_d		*new_lst;
+
+	new_token = (t_token *)ft_calloc(1, sizeof(t_token));
+	if (!new_token)
+		return (NULL);
+	new_token->fd_out = 1;
+	new_lst = ft_lstdouble_new(new_token);
+	if (!new_lst)
+	{
+		free(new_token);
+		return (NULL);
+	}
+	return (new_lst);
+}
+
+int		write_in_token(t_token *token, int c)
+{
+	size_t	i;
+
+	if (!token->token)
+	{
+		token->token = (char *)ft_calloc(256, sizeof(char));
+		if (!token)
+			return (-1);
+		token->size_of_token_line = 256;
+	}
+	i = 0;
+	while (token->token[i] && i < token->size_of_token_line)
+		i++;
+	if (i == token->size_of_token_line)
+	{
+		token->size_of_token_line *= 2;
+		token->token = ft_strrealloc(token->token, token->size_of_token_line);
+		if (!token->token)
+			return (-1);
+	}
+	token->token[i] = c;
+	return (0);
+}
+
+void	manage_quotes(int c, int *quoted_flag)
+{
+	if (c == '\'' && !(*quoted_flag))
+		*quoted_flag = SINGLE_QUOTE;
+	else if (c == '"' && !(*quoted_flag))
+		*quoted_flag = DOUBLE_QUOTE;
+	else if ((c == '\'' && *quoted_flag == SINGLE_QUOTE) || \
+									(c == '"' && *quoted_flag == DOUBLE_QUOTE))
+		*quoted_flag = 0;
+}
+
+void	new_pipe_token(t_data *all)
+{
+	t_lst_d		*new;
+
+	new = new_token();
+	if (!new)
+		error_exit(all);
+	ft_lstdouble_add_back(&(all->tokens), new);
+}
+
+void	recognise_tokens(t_data *all)
+{
+	int			quoted_flag;
+	int			i;
+	t_lst_d		*tmp;
+
+	i = -1;
+	quoted_flag = 0;
+	tmp = all->tokens;
+	while (all->line[++i])
+	{
+		if (errno)
+			error_exit(all);
+		if (all->line[i] != '|' || quoted_flag)
+			write_in_token((t_token *)tmp->content, all->line[i]);
+		else
+		{
+			new_pipe_token(all);
+			tmp = tmp->next;
+		}
+		manage_quotes(all->line[i], &quoted_flag);
 	}
 	if (quoted_flag)
-		error_exit();
+	{
+		all->error_message = ft_strdup("not matching quotes");
+		error_exit(all);
+	}
+}
+
+void	ft_put_tokens(void *content)
+{
+	t_token	*token;
+
+	token = (t_token *)content;
+	printf("token = %s\n", (token->token));
+	printf("size_of_token_line = %ld\n", token->size_of_token_line);
+}
+
+void	parser(t_data *all)
+{
+	t_lst_d	*tmp;
+
+	tmp = all->tokens;
+	recognise_tokens(all);
+	while (tmp)
+	{
+		ft_put_tokens(tmp->content);
+		tmp = tmp->next;
+	}
+	free_all(all);
+	exit(0);
+}
+
+int		main(int argc, char **argv, char **env)
+{
+	t_data	*all;
+
+	if (argc == 2)
+	{
+		init_data(&all, argv[1], env);
+		parser(all);
+	}
+	else
+		printf("give it only one argument please\n");
+	return (0);
 }

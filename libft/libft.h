@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/02 21:23:05 by dselmy            #+#    #+#             */
-/*   Updated: 2021/11/09 00:48:57 by dselmy           ###   ########.fr       */
+/*   Updated: 2021/12/23 19:16:01 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,8 @@ char				**ft_realloc_charmtrx(char **arr, size_t size);
 void				ft_free_charmtrx(char **mtrx);
 
 void				ft_quicksort(int *array, int left, int right);
+
+char				**ft_charmtrx_dup(char **src);
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 20

@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+         #
+#    By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/27 21:46:39 by dselmy            #+#    #+#              #
-#    Updated: 2021/12/23 01:05:35 by dselmy           ###   ########.fr        #
+#    Updated: 2021/12/23 21:06:11 by dselmy           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = push_swap
+NAME = parser
 
 INC_DIR = ./includes/
 LIBFT_DIR = ./libft/

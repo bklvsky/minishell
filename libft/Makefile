@@ -49,7 +49,8 @@ SRCS =	ft_atoi.c \
 		ft_lstlast.c \
 		ft_memset.c \
 		ft_strdup.c \
-		ft_strtrim.c
+		ft_strtrim.c \
+		ft_charmtrx_dup.c
 
 OBJS = $(SRCS:.c=.o)
 

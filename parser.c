@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 18:45:15 by dselmy            #+#    #+#             */
-/*   Updated: 2021/12/23 21:26:42 by dselmy           ###   ########.fr       */
+/*   Updated: 2021/12/24 20:08:36 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,17 +140,6 @@ int		write_in_token(t_token *token, int c)
 	return (0);
 }
 
-void	manage_quotes(int c, int *quoted_flag)
-{
-	if (c == '\'' && !(*quoted_flag))
-		*quoted_flag = SINGLE_QUOTE;
-	else if (c == '"' && !(*quoted_flag))
-		*quoted_flag = DOUBLE_QUOTE;
-	else if ((c == '\'' && *quoted_flag == SINGLE_QUOTE) || \
-									(c == '"' && *quoted_flag == DOUBLE_QUOTE))
-		*quoted_flag = 0;
-}
-
 void	new_pipe_token(t_data *all)
 {
 	t_lst_d		*new;
@@ -174,7 +163,13 @@ void	recognise_tokens(t_data *all)
 	{
 		if (errno)
 			error_exit(all);
-		if (all->line[i] != '|' || quoted_flag)
+/* maybe i should manage redirect here;
+if i stumble across a redirect symbol i start to look for the name of the file for redirect
+it all happens in the same token!
+and i dont write in the token line anything that has sth to do with redirections*/
+		if (is_redirect(all->line[i]))
+			manage_redirections();
+		else if (all->line[i] != '|' || quoted_flag)
 			write_in_token((t_token *)tmp->content, all->line[i]);
 		else
 		{
@@ -205,11 +200,11 @@ void	parser(t_data *all)
 
 	tmp = all->tokens;
 	recognise_tokens(all);
-	while (tmp)
+/*	while (tmp)
 	{
 		ft_put_tokens(tmp->content);
 		tmp = tmp->next;
-	}
+	}*/
 	free_all(all);
 	exit(0);
 }

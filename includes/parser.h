@@ -49,4 +49,7 @@ t_lst_d	*new_token(void);
 void	error_exit(t_data *all);
 void	free_all(t_data *all);
 
+void	manage_quotes(int c, int *quoted_flag);
+int		is_redirect(int c);
+
 #endif

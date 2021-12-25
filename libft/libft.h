@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/02 21:23:05 by dselmy            #+#    #+#             */
-/*   Updated: 2021/12/23 19:16:01 by dselmy           ###   ########.fr       */
+/*   Updated: 2021/12/25 20:17:00 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,8 @@ void				ft_free_charmtrx(char **mtrx);
 void				ft_quicksort(int *array, int left, int right);
 
 char				**ft_charmtrx_dup(char **src);
+
+char				*ft_strrealloc(char *old, size_t new_size);
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 20

@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 18:45:15 by dselmy            #+#    #+#             */
-/*   Updated: 2021/12/24 20:08:36 by dselmy           ###   ########.fr       */
+/*   Updated: 2021/12/25 20:18:26 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,34 +69,6 @@ if == builtin -> just save it as a token and move on with parsing
 				built_in_management
 			tokens = tokens->next*/
 
-
-	/*		
-			it's from the next step
-	
-		while (all->line[i] && all->line[i] == ' ')
-			i++;
-		if (!all->line[i])
-			break ;
-		if (all->line[i] == '>' || all->line[i] == '<')
-			manage_redirections();
-		else if (all->line[i] == '|')
-		*/
-
-char	*ft_strrealloc(char *old, size_t new_size)
-{
-	char	*new;
-
-	new = (char *)ft_calloc(new_size, sizeof(char));
-	if (!new)
-	{
-		free(old);
-		return (NULL);
-	}
-	ft_strlcpy(new, old, new_size);
-	free(old);
-	return (new);
-}
-
 t_lst_d	*new_token(void)
 {
 	t_token		*new_token;
@@ -140,6 +112,15 @@ int		write_in_token(t_token *token, int c)
 	return (0);
 }
 
+void	check_closed_quotes(int quoted_flag, t_data *all)
+{
+	if (quoted_flag)
+	{
+		all->error_message = ft_strdup("not matching quotes");
+		error_exit(all);
+	}
+}
+
 void	new_pipe_token(t_data *all)
 {
 	t_lst_d		*new;
@@ -163,26 +144,16 @@ void	recognise_tokens(t_data *all)
 	{
 		if (errno)
 			error_exit(all);
-/* maybe i should manage redirect here;
-if i stumble across a redirect symbol i start to look for the name of the file for redirect
-it all happens in the same token!
-and i dont write in the token line anything that has sth to do with redirections*/
-		if (is_redirect(all->line[i]))
-			manage_redirections();
-		else if (all->line[i] != '|' || quoted_flag)
+		manage_quotes(all->line[i], &quoted_flag);
+		if (all->line[i] != '|' || quoted_flag)
 			write_in_token((t_token *)tmp->content, all->line[i]);
 		else
 		{
 			new_pipe_token(all);
 			tmp = tmp->next;
 		}
-		manage_quotes(all->line[i], &quoted_flag);
 	}
-	if (quoted_flag)
-	{
-		all->error_message = ft_strdup("not matching quotes");
-		error_exit(all);
-	}
+	check_closed_quotes(quoted_flag, all);
 }
 
 void	ft_put_tokens(void *content)
@@ -200,11 +171,11 @@ void	parser(t_data *all)
 
 	tmp = all->tokens;
 	recognise_tokens(all);
-/*	while (tmp)
+	while (tmp)
 	{
 		ft_put_tokens(tmp->content);
 		tmp = tmp->next;
-	}*/
+	}
 	free_all(all);
 	exit(0);
 }

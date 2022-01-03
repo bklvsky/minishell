@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_charmtrx_dup.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 19:14:13 by dselmy            #+#    #+#             */
-/*   Updated: 2021/12/23 19:16:41 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/04 02:03:13 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	**ft_charmtrx_dup(char **src)
 	char	**new;
 	int		i;
 
-	new = (char **)ft_calloc(ft_charmtrx_len(src), sizeof(char *));
+	new = (char **)ft_calloc(ft_charmtrx_len(src) + 1, sizeof(char *));
 	if (!new)
 		return (NULL);
 	i = 0;
@@ -31,5 +31,5 @@ char	**ft_charmtrx_dup(char **src)
 		}
 		i++;
 	}
-    return (new);
+	return (new);
 }

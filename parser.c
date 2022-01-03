@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 18:45:15 by dselmy            #+#    #+#             */
-/*   Updated: 2021/12/25 20:18:26 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/04 01:54:11 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ int		write_in_token(t_token *token, int c)
 		token->size_of_token_line = 256;
 	}
 	i = 0;
+	//ft_strlcat
 	while (token->token[i] && i < token->size_of_token_line)
 		i++;
 	if (i == token->size_of_token_line)
@@ -165,15 +166,46 @@ void	ft_put_tokens(void *content)
 	printf("size_of_token_line = %ld\n", token->size_of_token_line);
 }
 
+void	put_files(void *content)
+{
+	t_file *file;
+
+	if (!content)
+	{
+		printf("no file for you\n");
+		return ;
+	}
+	file = (t_file *)content;
+	printf("file_name = %s\n", file->file_name);
+	printf("type of redirect = %d\n", file->type_of_redirect);
+}
+
+void	ft_put_read_token(void *content)
+{
+	t_token	*token;
+	int		i = -1;
+
+	printf("in put read token\n");
+	token = (t_token *)content;
+	if (token->cmd)
+	{
+		while (token->cmd[++i])
+			printf("arg%d = %s\n", i, token->cmd[i]);
+	}
+	ft_lstiter(token->files, &put_files);
+}
+
 void	parser(t_data *all)
 {
 	t_lst_d	*tmp;
 
 	tmp = all->tokens;
 	recognise_tokens(all);
+	parse_token(all);
 	while (tmp)
 	{
 		ft_put_tokens(tmp->content);
+		ft_put_read_token(tmp->content);
 		tmp = tmp->next;
 	}
 	free_all(all);

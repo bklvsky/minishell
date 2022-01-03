@@ -3,14 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   shutdown.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 19:38:10 by dselmy            #+#    #+#             */
-/*   Updated: 2021/12/23 21:05:12 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/02 19:01:01 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/parser.h"
+
+void	free_file(void *ptr)
+{
+	t_file	*file;
+
+	file = (t_file *)ptr;
+	free(file->file_name);
+	free(ptr);
+}
 
 void	free_token(void *ptr)
 {
@@ -21,6 +30,7 @@ void	free_token(void *ptr)
 	{
 		free(token->token);
 		ft_free_charmtrx(token->cmd);
+		ft_lstclear(&(token->files), &free_file);
 		free(token);
 	}
 }

@@ -40,12 +40,12 @@ typedef struct s_lst_d
 
 typedef struct s_data
 {
-	t_lst_d		*tokens;
-	char		*line;
-	char		**env;
-	char		*error_ident;
-	char		*error_message;
-}				t_data;
+	t_lst_d	*tokens;
+	char	*line;
+	char	**env;
+	char	*error_ident;
+	char	*error_message;
+}			t_data;
 
 t_lst_d	*ft_lstdouble_new(void *elem);
 void	ft_lstdouble_add_back(t_lst_d **head, t_lst_d *new);
@@ -57,8 +57,12 @@ void	ft_lstdouble_delone(t_lst_d *lst, void (*del)(void *));
 void	init_data(t_data **all, char *line, char **env);
 
 t_lst_d	*new_token(void);
+void	parse_token(t_data *all);
 
 void	manage_redirections(int *i, t_token *current_token, t_data *all);
+
+int		expand_env_var(char **buf, char *source, t_data *all);
+char	*get_var_name(char *line);
 
 void	error_exit(t_data *all);
 void	free_all(t_data *all);

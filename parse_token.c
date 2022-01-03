@@ -3,55 +3,53 @@
 /*                                                        :::      ::::::::   */
 /*   parse_token.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/24 19:01:12 by dselmy            #+#    #+#             */
-/*   Updated: 2021/12/25 21:16:12 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/04 01:56:45 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/parser.h"
 
-void	manage_redirections(int *i, t_token *cur_token, t_data *all)
+int	get_arg_len(char *token)
 {
-	t_file	new_file;
-	int		open_flags;
-
-	new_file.type_of_redirect = get_type_of_redirect(all->line, i);
-//	open_flags = get_open_flags(new_file.type_of_redirect);
-	skip_whitespaces(i, all->line);
-	new_file.file_name = get_file_name(all->line, i);
-	if (!new_file.file_name || !new_file.file_name[0])
+	char	*ptr;
+	int		i;
+	
+	ptr = token;
+	i = 0;
+	while (*ptr && *ptr != ' ' && !is_redirect(*ptr) && *ptr != '$')
 	{
-		all->error_message = ft_strdup("syntax error near unexpected token");
-		free(new_file.file_name);
-		error_exit(all);
+		i += 1;
+		ptr += 1;
 	}
-/*	if (new_file.type_of_redirect == SIMPLE_OUT || type_of_redirect == DOUBLE_OUT)
-		cur_token->fd_out = open(file_name, open_flags, 00644);
-	else
-		cur_token->fd_in = open(file_name, open_flags);
-	if (errno)
-	{
-		all->error_ident = file_name;
-		error_exit(all);
-	}*/
-//	printf("file name = %s\n", file_name);
+	return (i);
 }
 
-//void	go_to_next_cmd_arg()
-
-void	expand_env_var(char *buf, char *line, t_data *all)
+int	write_in_current_arg(char **arg, char *token, t_data *all)
 {
-	size_t		old_size;
+	char	*new_line;
+	char	*tmp;
+	int		len_to_add;
 
-	if (!buf)
-		old_size = ft_strchr(line, ' ') - line;
-	else
-		old_size = ft_strlen(buf);
-	/*find the variable in all->env, count its size, add this size to the old one
-		strrealloc old buf with new size and write the variable in the buf*/
+	len_to_add = get_arg_len(token);
+	tmp = *arg;
+	new_line = (char *)ft_calloc(len_to_add + 1, sizeof(char));
+	if (!new_line)
+		error_exit(all);
+	ft_strlcpy(new_line, token, len_to_add + 1);
+	*arg = ft_strjoin(tmp, new_line);
+	free(tmp);
+	free(new_line);
+	if (!(*arg))
+		error_exit(all);
+	return (len_to_add);
 }
+
+/*обработать все пробельные символы
+	определиться, как именно я буду везде передавать i, через ссылку или возвращать число
+	а то некрасиво, что по-разному везде*/
 
 void	read_token(t_token *cur_token, t_data *all)
 {
@@ -59,25 +57,35 @@ void	read_token(t_token *cur_token, t_data *all)
 	int		cmd_i;
 	int		quoted_flag;
 
-	i = -1;
+	i = 0;
 	cmd_i = 0;
 	quoted_flag = 0;
-	while (cur_token->token[++i])
+	if (!cur_token->token)
+	{
+		all->error_message = ft_strdup("syntax error");
+		error_exit(all);
+	}
+	skip_whitespaces(&i, cur_token->token);
+	while (cur_token->token[i])
 	{
 		if (manage_quotes(cur_token->token[i], &quoted_flag))
-			continue ;
+			i += 1;
 		if (cur_token->token[i] == '$' && quoted_flag != SINGLE_QUOTE)
-			expand_env_var(cur_token->cmd[cmd_i], cur_token->token + i, all);
+			i += expand_env_var(cur_token->cmd + cmd_i, cur_token->token + i, all);
 		else if (!quoted_flag && cur_token->token[i] == ' ')
 		{
-			ft_realloc_charmtrx(cur_token->cmd, cmd_i);
 			cmd_i += 1;
-			skip_whitespaces(&i, cur_token->token + i);
+			cur_token->cmd = ft_realloc_charmtrx(cur_token->cmd, cmd_i + 1);
+			if (!cur_token->cmd)
+				error_exit(all);
+			skip_whitespaces(&i, cur_token->token);
 		}
 		else if (is_redirect(cur_token->token[i]) && !quoted_flag)
-			manage_redirections();
+			manage_redirections(&i, cur_token, all);
 		else
-			write_in_current_arg();
+		{
+			i += write_in_current_arg(cur_token->cmd + cmd_i, cur_token->token + i, all);
+		}
 	}
 }
 
@@ -88,8 +96,8 @@ void	parse_token(t_data *all)
 	tmp = all->tokens;
 	while (tmp)
 	{
-		(t_token *)(tmp->content)->cmd = (char **)ft_calloc(1, sizeof(char *));
-		if (!(t_token *)(tmp->content)->cmd)
+		((t_token *)(tmp->content))->cmd = (char **)ft_calloc(2, sizeof(char *));
+		if (!((t_token *)(tmp->content))->cmd)
 			error_exit(all);
 		read_token((t_token *)tmp->content, all);
 		tmp = tmp->next;

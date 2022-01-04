@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/24 19:01:12 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/04 01:56:45 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/04 17:17:26 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,9 @@ void	read_token(t_token *cur_token, t_data *all)
 			skip_whitespaces(&i, cur_token->token);
 		}
 		else if (is_redirect(cur_token->token[i]) && !quoted_flag)
+		{
 			manage_redirections(&i, cur_token, all);
+		}
 		else
 		{
 			i += write_in_current_arg(cur_token->cmd + cmd_i, cur_token->token + i, all);

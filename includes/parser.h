@@ -18,6 +18,7 @@ typedef struct s_file
 {
 	char		*file_name;
 	int			type_of_redirect;
+	int			open_flags;
 }				t_file;
 
 typedef struct s_token

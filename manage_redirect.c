@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/25 16:30:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/04 01:25:10 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/04 17:26:21 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,19 @@ char	*get_file_name(char *line, int *i, t_data *all)
 			break ;
 		if (line[start + len] == '$' && quoted_flag != SINGLE_QUOTE)
 		{
-			start = start + len + expand_env_var(&name, line + start + len, all) + 1;
+			tmp = name;
+			tmp2 = ft_substr(line, start, len);
+			name = ft_strjoin(tmp, tmp2);
+			free(tmp);
+			if (!tmp2)
+			{
+				free(name);
+				error_exit(all);
+			}
+			free(tmp2);
+			if (!name)
+				error_exit(all);
+			start = start + len + expand_env_var(&name, line + start + len, all);
 			len = 0;
 		}
 		else if (!manage_quotes(line[start + len], &quoted_flag))
@@ -107,19 +119,30 @@ char	*get_file_name(char *line, int *i, t_data *all)
 	free(tmp2);
 	if (!name)
 		error_exit(all); 
-	*i += start + len;
+	*i = start + len;
 	return (name);
 }
 
 int	check_access_rigths(t_file *file)
 {
-	int		access_mode;
+	int		open_res;
+	
+	file->open_flags = get_open_flags(file->type_of_redirect);
+	if (file->type_of_redirect == SIMPLE_OUT || file->type_of_redirect == DOUBLE_OUT)
+		open_res = open(file->file_name, file->open_flags, 00644);
+	else
+		open_res = open(file->file_name, file->open_flags);
+	if (open_res < 0)
+		return (-1);
+	close(open_res);
+	return (1);
+	/*int		access_mode;
 	
 	if (file->type_of_redirect == SIMPLE_OUT || file->type_of_redirect == DOUBLE_OUT)
 		access_mode = 2;
 	else
 		access_mode = 3;
-	return (access(file->file_name, access_mode));
+	return (access(file->file_name, 0) & access(file->file_name, access_mode));*/
 }
 
 void	manage_redirections(int *i, t_token *cur_token, t_data *all)
@@ -136,6 +159,7 @@ void	manage_redirections(int *i, t_token *cur_token, t_data *all)
 	new_file->type_of_redirect = get_type_of_redirect(cur_token->token, i);
 	skip_whitespaces(i, cur_token->token);
 	new_file->file_name = get_file_name(cur_token->token, i, all);
+	skip_whitespaces(i, cur_token->token);
 	if (!new_file->file_name || !new_file->file_name[0])
 	{
 		all->error_message = ft_strdup("syntax error near unexpected token");

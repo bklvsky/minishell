@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/25 16:30:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/04 17:26:21 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/14 02:42:39 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,23 +34,6 @@ int	get_type_of_redirect(char *line, int *i)
 		}
 		return (SIMPLE_IN);
 	}
-}
-
-int	get_open_flags(int type_of_redirect)
-{
-	int		flags;
-
-	if (type_of_redirect == SIMPLE_OUT || type_of_redirect == DOUBLE_OUT)
-	{
-		flags = O_WRONLY | O_CREAT;
-		if (type_of_redirect == DOUBLE_OUT)
-			flags = flags | O_APPEND;
-		else
-			flags = flags | O_TRUNC;
-	}
-	else
-		flags = O_RDONLY;
-	return (flags);
 }
 
 char	*get_file_name(char *line, int *i, t_data *all)
@@ -123,33 +106,10 @@ char	*get_file_name(char *line, int *i, t_data *all)
 	return (name);
 }
 
-int	check_access_rigths(t_file *file)
-{
-	int		open_res;
-	
-	file->open_flags = get_open_flags(file->type_of_redirect);
-	if (file->type_of_redirect == SIMPLE_OUT || file->type_of_redirect == DOUBLE_OUT)
-		open_res = open(file->file_name, file->open_flags, 00644);
-	else
-		open_res = open(file->file_name, file->open_flags);
-	if (open_res < 0)
-		return (-1);
-	close(open_res);
-	return (1);
-	/*int		access_mode;
-	
-	if (file->type_of_redirect == SIMPLE_OUT || file->type_of_redirect == DOUBLE_OUT)
-		access_mode = 2;
-	else
-		access_mode = 3;
-	return (access(file->file_name, 0) & access(file->file_name, access_mode));*/
-}
-
 void	manage_redirections(int *i, t_token *cur_token, t_data *all)
 {
 	t_file	*new_file;
 	t_list	*new_lst;
-//	int		open_flags;
 
 	new_file = (t_file *)malloc(sizeof(t_file));
 	new_lst = ft_lstnew(new_file);
@@ -161,25 +121,5 @@ void	manage_redirections(int *i, t_token *cur_token, t_data *all)
 	new_file->file_name = get_file_name(cur_token->token, i, all);
 	skip_whitespaces(i, cur_token->token);
 	if (!new_file->file_name || !new_file->file_name[0])
-	{
-		all->error_message = ft_strdup("syntax error near unexpected token");
-	//	free(new_file->file_name);
-		error_exit(all);
-	}
-	if (check_access_rigths(new_file) < 0)
-	{
-		all->error_ident = ft_strdup(new_file->file_name);
-		error_exit(all);
-	}
+		error_syntax_exit(all);
 }
-
-/*	if (new_file->type_of_redirect == SIMPLE_OUT || type_of_redirect == DOUBLE_OUT)
-		cur_token->fd_out = open(file_name, open_flags, 00644);
-	else
-		cur_token->fd_in = open(file_name, open_flags);
-	if (errno)
-	{
-		all->error_ident = file_name;
-		error_exit(all);
-	}*/
-//	printf("file name = %s\n", file_name);

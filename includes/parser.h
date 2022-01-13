@@ -6,6 +6,8 @@
 # include <sys/errno.h>
 # include <string.h>
 # include <fcntl.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 
 # define SINGLE_QUOTE 1
 # define DOUBLE_QUOTE 2
@@ -27,6 +29,7 @@ typedef struct s_token
 	size_t		size_of_token_line;
 	char		**cmd;
 	t_list		*files;
+	int			pipefd[2];
 	int			fd_in;
 	int			fd_out;
 	int			is_built_in;
@@ -54,6 +57,7 @@ void	ft_lstdouble_add_front(t_lst_d **head, t_lst_d *new);
 t_lst_d	*ft_lstdouble_last(t_lst_d *lst);
 void	ft_lstdouble_clear(t_lst_d **lst, void (*del)(void *));
 void	ft_lstdouble_delone(t_lst_d *lst, void (*del)(void *));
+int		ft_lstdouble_size(t_lst_d *lst);
 
 void	init_data(t_data **all, char *line, char **env);
 
@@ -66,10 +70,25 @@ int		expand_env_var(char **buf, char *source, t_data *all);
 char	*get_var_name(char *line);
 
 void	error_exit(t_data *all);
+void	error_pipe_exit(t_lst_d *token, t_data *all);
+void	error_launch_exit(t_lst_d *token, t_data *all);
+void	error_syntax_exit(t_data *all);
 void	free_all(t_data *all);
+void	close_all(t_lst_d *token);
+
+int		get_open_flags(int type_of_redirect);
+int		open_all_files(t_token *token, t_data *all);
+
+void	launch_minishell(t_data *all, int num_of_tokens);
+void	exec_cmd(char **cmd_args, t_data *all);
 
 int		manage_quotes(int c, int *quoted_flag);
 int		is_redirect(int c);
 void	skip_whitespaces(int *i, char *str);
+
+/*delete later*/
+
+void	ft_put_read_token(void *content);
+void	ft_put_tokens(void *content);
 
 #endif

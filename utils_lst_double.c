@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_lst_double.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 18:50:39 by dselmy            #+#    #+#             */
-/*   Updated: 2021/12/23 20:35:58 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/05 22:22:37 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,4 +100,19 @@ void	ft_lstdouble_clear(t_lst_d **lst, void (*del)(void *))
 		ft_lstdouble_delone(*lst, del);
 		*lst = NULL;
 	}
+}
+
+int	ft_lstdouble_size(t_lst_d *lst)
+{
+	int		size;
+	t_lst_d	*tmp;
+
+	size = 0;
+	tmp = lst;
+	while (tmp)
+	{
+		size += 1;
+		tmp = tmp->next;
+	}
+	return (size);
 }

@@ -6,68 +6,11 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 18:45:15 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/04 01:54:11 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/14 02:41:22 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-/*PARSER:
-TOKEN RECOGNITION - READ USING SHELL GRAMMAR
-
-
-TOKEN RECOGNITION:
-
-"The token shall be from the current position in the input until a token 
-is delimited according to one of the rules below; the characters forming 
-the token are exactly those in the input, including any quoting characters. 
-If it is indicated that a token is delimited, and no characters have been 
-included in a token, processing shall continue until an actual token is delimited."
-
-!!During token recognition no substitutions shall be actually performed!!
-
-
-1. end of input - current token delimeted;
-2. If the current character is backslash, single-quote, or double-quote ( '\', '", or ' )'
-and it is not quoted, it shall affect quoting for subsequent characters up to 
-the end of the quoted text. The rules for quoting are as described in Quoting.
-3. The token shall not be delimited by the end of the quoted field.
-
-; - isn't interpreted as a delimeter, appends to the previous command or word
-
-
-PARSING AT THE TOKEN LEVEL
-
-[command name][redirection in or out of file]
-
-if "<" or ">" next word is a name of a file 
-if next sym == current - append mode in redirect output
-						reading from shell in input as if it was in double quoted
-open file and save in fd_in/fd_out of current token [open() flags depend on number of >>]
-(if it can't be opened -> error exit with name of file as an identificator)
-if "|" tokens should be placed in a linked list and pipex will be used
-
-else ->we save all next words in char **cmd -> command name with arguments and so on
-right there access/stat is performed on the first word of the token 
-to check if binary file exists
-or
-if == builtin -> just save it as a token and move on with parsing
-
-*/
-
 #include "./includes/parser.h"
-
-
-/*new_token() -> allocate new token and link it with a current one*/
-/*manage_redirections -> new fds in current token structure*/
-/*manage pipes -> if t_list *tokens->next means there is a pipe
-		while tokens != NULL
-			if next
-				pipe()
-			if (!built_in)
-				fork()
-			else
-				built_in_management
-			tokens = tokens->next*/
 
 t_lst_d	*new_token(void)
 {
@@ -77,7 +20,6 @@ t_lst_d	*new_token(void)
 	new_token = (t_token *)ft_calloc(1, sizeof(t_token));
 	if (!new_token)
 		return (NULL);
-	new_token->fd_out = 1;
 	new_lst = ft_lstdouble_new(new_token);
 	if (!new_lst)
 	{
@@ -87,7 +29,7 @@ t_lst_d	*new_token(void)
 	return (new_lst);
 }
 
-int		write_in_token(t_token *token, int c)
+int		write_in_token(t_token *token, char c)
 {
 	size_t	i;
 
@@ -98,11 +40,8 @@ int		write_in_token(t_token *token, int c)
 			return (-1);
 		token->size_of_token_line = 256;
 	}
-	i = 0;
-	//ft_strlcat
-	while (token->token[i] && i < token->size_of_token_line)
-		i++;
-	if (i == token->size_of_token_line)
+	i = ft_strlen(token->token);
+	if (i == token->size_of_token_line - 1)
 	{
 		token->size_of_token_line *= 2;
 		token->token = ft_strrealloc(token->token, token->size_of_token_line);
@@ -117,7 +56,12 @@ void	check_closed_quotes(int quoted_flag, t_data *all)
 {
 	if (quoted_flag)
 	{
-		all->error_message = ft_strdup("not matching quotes");
+		if (quoted_flag == SINGLE_QUOTE)
+			all->error_message = ft_strdup\
+			("unexpected newline while looking for matching '''");
+		else
+			all->error_message = ft_strdup\
+			("unexpected newline while looking for matching '\"'");
 		error_exit(all);
 	}
 }
@@ -157,44 +101,6 @@ void	recognise_tokens(t_data *all)
 	check_closed_quotes(quoted_flag, all);
 }
 
-void	ft_put_tokens(void *content)
-{
-	t_token	*token;
-
-	token = (t_token *)content;
-	printf("token = %s\n", (token->token));
-	printf("size_of_token_line = %ld\n", token->size_of_token_line);
-}
-
-void	put_files(void *content)
-{
-	t_file *file;
-
-	if (!content)
-	{
-		printf("no file for you\n");
-		return ;
-	}
-	file = (t_file *)content;
-	printf("file_name = %s\n", file->file_name);
-	printf("type of redirect = %d\n", file->type_of_redirect);
-}
-
-void	ft_put_read_token(void *content)
-{
-	t_token	*token;
-	int		i = -1;
-
-	printf("in put read token\n");
-	token = (t_token *)content;
-	if (token->cmd)
-	{
-		while (token->cmd[++i])
-			printf("arg%d = %s\n", i, token->cmd[i]);
-	}
-	ft_lstiter(token->files, &put_files);
-}
-
 void	parser(t_data *all)
 {
 	t_lst_d	*tmp;
@@ -208,8 +114,6 @@ void	parser(t_data *all)
 		ft_put_read_token(tmp->content);
 		tmp = tmp->next;
 	}
-	free_all(all);
-	exit(0);
 }
 
 int		main(int argc, char **argv, char **env)
@@ -218,8 +122,13 @@ int		main(int argc, char **argv, char **env)
 
 	if (argc == 2)
 	{
+		if (!argv[1][0])
+			return (0);
 		init_data(&all, argv[1], env);
 		parser(all);
+		launch_minishell(all, ft_lstdouble_size(all->tokens));
+		free_all(all);
+		exit(0);
 	}
 	else
 		printf("give it only one argument please\n");

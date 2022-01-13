@@ -6,47 +6,11 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 19:38:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/02 19:01:01 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/13 22:53:39 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/parser.h"
-
-void	free_file(void *ptr)
-{
-	t_file	*file;
-
-	file = (t_file *)ptr;
-	free(file->file_name);
-	free(ptr);
-}
-
-void	free_token(void *ptr)
-{
-	t_token		*token;
-
-	token = (t_token *)ptr;
-	if (token)
-	{
-		free(token->token);
-		ft_free_charmtrx(token->cmd);
-		ft_lstclear(&(token->files), &free_file);
-		free(token);
-	}
-}
-
-void	free_all(t_data *all)
-{
-	if (all)
-	{
-		ft_free_charmtrx(all->env);
-		free(all->line);
-		ft_lstdouble_clear(&(all->tokens), &free_token);
-		free(all->error_ident);
-		free(all->error_message);
-		free(all);
-	}
-}
 
 void	put_error(t_data *all)
 {
@@ -58,13 +22,34 @@ void	put_error(t_data *all)
 			ft_putstr_fd(": ", 2);
 		}
 	}
-	if (errno)
-		ft_putstr_fd(strerror(errno), 2);
-	else if (all && all->error_message)
+	if (all && all->error_message)
 		ft_putstr_fd(all->error_message, 2);
+	else if (errno)
+		ft_putstr_fd(strerror(errno), 2);
 	else
 		return ;
 	write(2, "\n", 1);
+}
+
+void	error_syntax_exit(t_data *all)
+{
+	/*make it more specific: 
+	for example, syntax error near unexpected token 'newline' or '|' */
+	all->error_message = ft_strdup("syntax error near unexpected token");
+		error_exit(all);
+}
+
+void	error_pipe_exit(t_lst_d *token, t_data *all)
+{
+	if (token->prev)
+		close(((t_token *)token->prev->content)->pipefd[0]);
+	error_exit(all);
+}
+
+void	error_launch_exit(t_lst_d *token, t_data *all)
+{
+	close_all(token);
+	error_exit(all); 
 }
 
 void	error_exit(t_data *all)

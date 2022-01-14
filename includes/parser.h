@@ -8,6 +8,8 @@
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include "/Users/sstyr/.brew/Cellar/readline/8.1.1/include/readline/readline.h"
+# include "/Users/sstyr/.brew/Cellar/readline/8.1.1/include/readline/history.h"
 
 # define SINGLE_QUOTE 1
 # define DOUBLE_QUOTE 2

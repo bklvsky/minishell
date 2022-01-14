@@ -25,7 +25,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 		@make -C $(LIBFT_DIR)
-		gcc -o $(NAME) $(CFLAGS) -I$(INC_DIR) $(OBJ) $(LIBFT_DIR)libft.a
+		gcc -o $(NAME) $(CFLAGS) -I$(INC_DIR) $(OBJ) $(LIBFT_DIR)libft.a -L/Users/sstyr/.brew/Cellar/readline/8.1.1/lib -lreadline
 
 %.o:	%.c
 		gcc -c $(CFLAGS) -I$(INC_DIR) $< -o $@ -MD

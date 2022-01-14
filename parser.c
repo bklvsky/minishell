@@ -119,16 +119,25 @@ void	parser(t_data *all)
 int		main(int argc, char **argv, char **env)
 {
 	t_data	*all;
+	char	*inpt;
+	(void)argv;
 
-	if (argc == 2)
+	rl_catch_signals = 0;
+	if (argc == 1)
 	{
-		if (!argv[1][0])
-			return (0);
-		init_data(&all, argv[1], env);
-		parser(all);
-		launch_minishell(all, ft_lstdouble_size(all->tokens));
-		free_all(all);
-		exit(0);
+		while(1)
+		{
+			inpt = readline("Enter text: ");
+			add_history(inpt);
+//			if (!argv[1][0])
+//				return (0);
+			init_data(&all, inpt, env);
+			parser(all);
+			launch_minishell(all, ft_lstdouble_size(all->tokens));
+			free(inpt);
+			free_all(all);
+//			exit(0);
+		}
 	}
 	else
 		printf("give it only one argument please\n");

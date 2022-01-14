@@ -3,14 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   expand_env_var.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 02:35:01 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/04 17:26:42 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/14 20:57:02 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/parser.h"
+
+/*check for permitted symbols is alnum || '_' (is digit not in the first symbol
+if '?' ->last exit status*/
 
 char	*get_var_value(char *var_name, char **env)
 {

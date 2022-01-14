@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/25 16:30:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/14 02:42:39 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/14 03:17:39 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,70 +39,21 @@ int	get_type_of_redirect(char *line, int *i)
 char	*get_file_name(char *line, int *i, t_data *all)
 {
 	char	*name;
-	char	*tmp;
-	char	*tmp2;
-	int		len;
-	int		start;
 	int		quoted_flag;
-
-	len = 0;
-	quoted_flag = 0;
+	
 	name = NULL;
-	start = *i;
-	while (line[start + len])
+	quoted_flag = 0;
+	while (line[*i])
 	{
-		if ((line[start + len] == ' ' || is_redirect(line[start + len])) && !quoted_flag)
+		if (!quoted_flag && (line[*i] == ' ' || is_redirect(line[*i])))
 			break ;
-		if (line[start + len] == '$' && quoted_flag != SINGLE_QUOTE)
-		{
-			tmp = name;
-			tmp2 = ft_substr(line, start, len);
-			name = ft_strjoin(tmp, tmp2);
-			free(tmp);
-			if (!tmp2)
-			{
-				free(name);
-				error_exit(all);
-			}
-			free(tmp2);
-			if (!name)
-				error_exit(all);
-			start = start + len + expand_env_var(&name, line + start + len, all);
-			len = 0;
-		}
-		else if (!manage_quotes(line[start + len], &quoted_flag))
-			len += 1;
+		else if (manage_quotes(line[*i], &quoted_flag))
+			*i += 1;
+		else if (line[*i] == '$' && quoted_flag != SINGLE_QUOTE)
+			*i += expand_env_var(&name, line + *i, all);
 		else
-		{
-			tmp = name;
-			tmp2 = ft_substr(line, start, len);
-			name = ft_strjoin(tmp, tmp2);
-			free(tmp);
-			if (!tmp2)
-			{
-				free(name);
-				error_exit(all);
-			}
-			free(tmp2);
-			if (!name)
-				error_exit(all);
-			start = start + len + 1;
-			len = 0;
-		}
+			*i += write_in_current_arg(quoted_flag, &name, line + *i, all);
 	}
-	tmp = name;
-	tmp2 = ft_substr(line, start, len);
-	name = ft_strjoin(tmp, tmp2);
-	free(tmp);
-	if (!tmp2)
-	{
-		free(name);
-		error_exit(all);
-	}
-	free(tmp2);
-	if (!name)
-		error_exit(all); 
-	*i = start + len;
 	return (name);
 }
 

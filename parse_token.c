@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/24 19:01:12 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/14 02:37:35 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/14 03:16:29 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,11 @@ int	get_arg_len(int quoted_flag, char *token)
 	
 	ptr = token;
 	i = 0;
-	while (*ptr && *ptr != '"' && *ptr != '\'')
+	while (*ptr)
 	{
+		if ((*ptr == '"' && quoted_flag == DOUBLE_QUOTE) || \
+		(*ptr == '\'' && quoted_flag == SINGLE_QUOTE))
+			break ;
 		if ((*ptr == ' ' || is_redirect(*ptr) || *ptr == '$') && !quoted_flag)
 			break ;
 		i += 1;
@@ -80,7 +83,7 @@ void	read_token(t_token *cur_token, t_data *all)
 	{
 		if (manage_quotes(cur_token->token[i], &quoted_flag))
 			i += 1;
-		if (cur_token->token[i] == '$' && quoted_flag != SINGLE_QUOTE)
+		else if (cur_token->token[i] == '$' && quoted_flag != SINGLE_QUOTE)
 			i += expand_env_var(cur_token->cmd + cmd_i, cur_token->token + i, all);
 		else if (!quoted_flag && cur_token->token[i] == ' ')
 			make_new_cmd_arg(&i, &cmd_i, cur_token, all);

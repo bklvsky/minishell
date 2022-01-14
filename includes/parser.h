@@ -64,6 +64,8 @@ void	init_data(t_data **all, char *line, char **env);
 t_lst_d	*new_token(void);
 void	parse_token(t_data *all);
 
+int	write_in_current_arg(int quoted_flag, char **arg, char *token, t_data *all);
+
 void	manage_redirections(int *i, t_token *current_token, t_data *all);
 
 int		expand_env_var(char **buf, char *source, t_data *all);

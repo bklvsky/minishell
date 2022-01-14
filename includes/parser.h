@@ -47,6 +47,7 @@ typedef struct s_lst_d
 typedef struct s_data
 {
 	t_lst_d	*tokens;
+	int		last_exit_status;
 	char	*line;
 	char	**env;
 	char	*error_ident;

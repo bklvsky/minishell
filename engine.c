@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   engine.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:03:45 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/13 22:40:03 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/14 20:59:28 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	launch_cmd(t_lst_d *token, t_data *all)
 			close(((t_token *)token->prev->content)->pipefd[0]);
 		if (token->next)
 			close(token_data->pipefd[1]);
-		waitpid(pid, NULL, 0);
+		waitpid(pid, &all->last_exit_status, 0);
 	}
 }
 

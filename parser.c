@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 18:45:15 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/16 20:10:52 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/16 20:16:31 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	check_closed_quotes(int quoted_flag, t_data *all)
 		else
 			all->error_message = ft_strdup\
 			("unexpected newline while looking for matching '\"'");
-		error_exit(all);
+		error_exit(all); // not exit but back to the cycle
 	}
 }
 

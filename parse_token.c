@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_token.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/24 19:01:12 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/14 03:16:29 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/16 20:17:03 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	read_token(t_token *cur_token, t_data *all)
 	i = 0;
 	cmd_i = 0;
 	quoted_flag = 0;
-	if (!cur_token->token)
+	if (!cur_token->token) // not exit but back to the cycle
 	{
 		all->error_message = ft_strdup("syntax error");
 		error_exit(all);

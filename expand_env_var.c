@@ -6,13 +6,13 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 02:35:01 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/14 20:57:02 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/16 20:01:16 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/parser.h"
 
-/*check for permitted symbols is alnum || '_' (is digit not in the first symbol
+/*check for permitted symbols is alnum || '_' (is digit not in the first symbol)
 if '?' ->last exit status*/
 
 char	*get_var_value(char *var_name, char **env)
@@ -21,6 +21,8 @@ char	*get_var_value(char *var_name, char **env)
 	int		i;
 
 	i = 0;
+	if (!var_name[0])
+		return (ft_strdup("$"));
 	while (env[i])
 	{
 		env_name = ft_substr(env[i], 0, ft_strchr(env[i], '=') - env[i]);
@@ -44,6 +46,8 @@ char	*get_var_name(char *line)
 
 	ptr = line;
 	len_of_name = 0;
+	if (*ptr == '?')
+		return (ft_strdup("?"));
 	if (!ft_isalpha(*ptr) && *ptr != '_')
 		return (ft_strdup(""));
 	while (ft_isalnum(*ptr) || *ptr == '_')
@@ -65,7 +69,10 @@ int	expand_env_var(char **buf, char *source, t_data *all)
 	if (!var_name)
 		error_exit(all);
 	var_name_len = ft_strlen(var_name);
-	var_val = get_var_value(var_name, all->env);
+	if (ft_strncmp(var_name, "?", 2) == 0)
+		var_val = ft_itoa(all->last_exit_status);
+	else
+		var_val = get_var_value(var_name, all->env);
 	if (!var_val)
 	{
 		free(var_name);
@@ -79,7 +86,4 @@ int	expand_env_var(char **buf, char *source, t_data *all)
 	free(*buf);
 	*buf = new_line;
 	return (var_name_len + 1);
-	//find vlue of the variable; strjoin with old line; free line; line = new
-	/*find the variable in all->env, count its size, add this size to the old one
-		strrealloc old buf with new size and write the variable in the buf*/
 }

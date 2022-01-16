@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 18:45:15 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/14 03:15:44 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/16 20:10:52 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,30 +116,44 @@ void	parser(t_data *all)
 	}
 }
 
-int		main(int argc, char **argv, char **env)
+void	unknown_arguments(int argc, char **argv)
+{
+	int		i;
+
+	i = 0;
+	write(2, "minishell: unknown argument: ", 29);
+	while (i < argc)
+	{
+		write(2, "\"", 1);
+		write(2, argv[i], ft_strlen(argv[i]));
+		write(2, "\", ", 3);
+		i += 1;
+	}
+	write(2, "\nUsage: ./minishell [--no arguments]\n", 37);
+}
+
+int		main(int argc, char **argv, char **envp)
 {
 	t_data	*all;
 	char	*inpt;
-	(void)argv;
 
 	rl_catch_signals = 0;
 	if (argc == 1)
 	{
+		init_struct_first(&all, envp);
 		while(1)
 		{
-			inpt = readline("Enter text: ");
+			inpt = readline("minishell: ");
 			add_history(inpt);
-//			if (!argv[1][0])
-//				return (0);
-			init_data(&all, inpt, env);
+			init_data(&all, inpt);
 			parser(all);
 			launch_minishell(all, ft_lstdouble_size(all->tokens));
 			free(inpt);
-			free_all(all);
+			free_cmd(all);
 //			exit(0);
 		}
 	}
 	else
-		printf("give it only one argument please\n");
+		unknown_arguments(argc, argv);
 	return (0);
 }

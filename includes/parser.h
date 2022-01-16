@@ -8,6 +8,7 @@
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include "/Users/sstyr/.brew/Cellar/readline/8.1.1/include/readline/readline.h"
 # include "/Users/sstyr/.brew/Cellar/readline/8.1.1/include/readline/history.h"
 
@@ -62,12 +63,13 @@ void	ft_lstdouble_clear(t_lst_d **lst, void (*del)(void *));
 void	ft_lstdouble_delone(t_lst_d *lst, void (*del)(void *));
 int		ft_lstdouble_size(t_lst_d *lst);
 
-void	init_data(t_data **all, char *line, char **env);
+void	init_struct_first(t_data **all, char **env);
+void	init_data(t_data *all, char *input);
 
 t_lst_d	*new_token(void);
 void	parse_token(t_data *all);
 
-int	write_in_current_arg(int quoted_flag, char **arg, char *token, t_data *all);
+int		write_in_current_arg(int quoted_flag, char **arg, char *token, t_data *all);
 
 void	manage_redirections(int *i, t_token *current_token, t_data *all);
 
@@ -79,6 +81,7 @@ void	error_pipe_exit(t_lst_d *token, t_data *all);
 void	error_launch_exit(t_lst_d *token, t_data *all);
 void	error_syntax_exit(t_data *all);
 void	free_all(t_data *all);
+void	free_cmd(t_data *all);
 void	close_all(t_lst_d *token);
 
 int		get_open_flags(int type_of_redirect);
@@ -86,6 +89,7 @@ int		open_all_files(t_token *token, t_data *all);
 
 void	launch_minishell(t_data *all, int num_of_tokens);
 void	exec_cmd(char **cmd_args, t_data *all);
+void	check_directory(char *bin_name, t_data *all);
 
 int		manage_quotes(int c, int *quoted_flag);
 int		is_redirect(int c);

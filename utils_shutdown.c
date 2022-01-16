@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_shutdown.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/13 22:41:05 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/13 22:42:08 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/16 20:01:17 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,24 @@ static void	free_token(void *ptr)
 
 	token = (t_token *)ptr;
 	if (token)
-	{
+	{…
 		free(token->token);
 		ft_free_charmtrx(token->cmd);
 		ft_lstclear(&(token->files), &free_file);
 		free(token);
+	}
+}
+
+void	free_cmd(t_data *all)
+{
+	if (all)
+	{
+		free(all->error_ident);
+		all->error_ident = NULL;
+		free(all->error_message);
+		all->error_message = NULL;
+		ft_lstdouble_clear(&(all->tokens), &free_token);
+		all->tokens = NULL;
 	}
 }
 

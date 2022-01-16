@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 01:12:03 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/12 03:08:25 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/16 19:27:57 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,20 @@ int		find_exec(char **cmd_args, char **env)
 	}
 	ft_free_charmtrx(paths_tmp);
 	if (exec_path)
+	{
+		check_directory(exec_path, all);
 		execve(exec_path, cmd_args, env);
+	}
 	return (0);
+}
+
+void	check_directory(char *bin_name, t_data *all)
+{
+	struct stat data;
+
+	if (!stat(bin_name, &data))
+		if (data.st_mode & S_ISDIR)
+			all->error_message = ft_strdup("is a directory");
 }
 
 void	exec_cmd(char **cmd_args, t_data *all)
@@ -73,7 +85,10 @@ void	exec_cmd(char **cmd_args, t_data *all)
 		it doesnt work on binary files, jokes on you
 		i guess it should be done using stat(), i'll try it later*/
 		if (access(cmd_args[0], F_OK & X_OK) == 0)
+		{
+			check_directory(cmd_args[0], all);
 			execve(cmd_args[0], cmd_args, all->env);
+		}
 	}
 	all->error_ident = ft_strdup(cmd_args[0]);
 }

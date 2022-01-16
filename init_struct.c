@@ -3,23 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   init_struct.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 19:03:07 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/04 01:43:43 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/16 19:02:02 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/parser.h"
 
-void	init_data(t_data **all, char *line, char **env)
+void	init_struct_first(t_data **all, char **env)
 {
 	*all = (t_data *)ft_calloc(1, sizeof(t_data));
 	if (!*all)
 		error_exit(*all);
-	(*all)->tokens = new_token();
+//	(*all)->tokens = new_token();
 	(*all)->env = ft_charmtrx_dup(env);
-	(*all)->line = ft_strdup(line);
-	if (!(*all)->env || !(*all)->env || !(*all)->tokens)
+//	(*all)->line = line;
+	if (!(*all)->env)
+		error_exit(*all);
+}
+
+void	init_data(t_data *all, char *input)
+{
+	(*all)->tokens = new_token();
+	(*all)->line = ft_strdup(input);
+	if (!(*all)->tokens || !(*all)->line)
 		error_exit(*all);
 }

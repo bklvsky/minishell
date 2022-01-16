@@ -1,12 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_proc.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sstyr <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/16 20:06:21 by sstyr             #+#    #+#             */
+/*   Updated: 2022/01/16 20:06:22 by sstyr            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "buildins.h"
 #include <stdio.h>
 
 t_list	*read_env(char **strs)
 {
-	int i;
-	t_list *env_list;
-	t_env *var;
-	char **tmp;
+	int		i;
+	t_list	*env_list;
+	t_env	*var;
+	char	**tmp;
 
 	env_list = NULL;
 	i = 0;
@@ -17,7 +29,7 @@ t_list	*read_env(char **strs)
 		var->name = ft_strdup(tmp[0]);
 		var->val = ft_strdup(tmp[1]);
 		ft_lstadd_back(&env_list, ft_lstnew(var));
-		while(*tmp)
+		while (*tmp)
 		{
 			free(*tmp);
 			tmp++;
@@ -28,7 +40,7 @@ t_list	*read_env(char **strs)
 	return (env_list);
 }
 
-void print_env(t_list **env_list)
+void	print_env(t_list **env_list)
 {
 	t_list	*tmp;
 	t_env	*var;
@@ -43,10 +55,10 @@ void print_env(t_list **env_list)
 	}
 }
 
-t_env  *get_env_by_name(t_list **env_list, char *name)
+t_env	*get_var_by_name(t_list **env_list, char *name)
 {
-	t_list *tmp;
-	t_env *var;
+	t_list	*tmp;
+	t_env	*var;
 
 	if (*env_list)
 		tmp = *env_list;
@@ -58,4 +70,31 @@ t_env  *get_env_by_name(t_list **env_list, char *name)
 		tmp = tmp->next;
 	}
 	return (NULL);
+}
+
+char	*get_val_by_name(t_list **env_list, char *name)
+{
+	t_list	*tmp;
+	t_env	*var;
+
+	if (*env_list)
+		tmp = *env_list;
+	while (tmp->next)
+	{
+		var = tmp->content;
+		if (ft_strncmp(var->name, name, ft_strlen(var->name)) == 0)
+			return (var->val);
+		tmp = tmp->next;
+	}
+	return (NULL);
+}
+
+char	*change_var_val(t_list **env_list, char *name, char *new_val)
+{
+	t_env	*var;
+
+	var = get_var_by_name(env_list, name);
+	free(var->val);
+	var->val = ft_strdup(new_val);
+	return (var->val);
 }

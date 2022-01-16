@@ -1,13 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pwd.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sstyr <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/16 20:06:28 by sstyr             #+#    #+#             */
+/*   Updated: 2022/01/16 20:06:29 by sstyr            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "buildins.h"
 
-int		mini_pwd(void)
+int	ft_pwd(void)
 {
 	char	*buffer;
 	char	*error;
 
 	buffer = NULL;
 	errno = 0;
-	if (!(buffer = (getcwd(buffer, PATH_MAX))))
+	buffer = getcwd(buffer, PATH_MAX);
+	if (!buffer)
 	{
 		write(2, "minishell: pwd: ", 16);
 		error = strerror(errno);

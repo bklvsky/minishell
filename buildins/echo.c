@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   echo.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sstyr <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/16 20:05:54 by sstyr             #+#    #+#             */
+/*   Updated: 2022/01/16 20:05:55 by sstyr            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "buildins.h"
 
 static int	check_flag(char *argument)
@@ -15,7 +27,7 @@ static int	check_flag(char *argument)
 	return (1);
 }
 
-int			mini_echo(char **args)
+int	ft_echo(char **args)
 {
 	int		index;
 	int		temp;
@@ -23,8 +35,12 @@ int			mini_echo(char **args)
 
 	index = 0;
 	flag = 0;
-	while (args[++index] && (temp = check_flag(args[index])))
+	temp = check_flag(args[index]);
+	while (args[++index])
+	{
+		temp = check_flag(args[index]);
 		flag = temp;
+	}
 	while (args[index])
 	{
 		write(1, args[index], ft_strlen(args[index]));
@@ -36,4 +52,3 @@ int			mini_echo(char **args)
 		write(1, "\n", 1);
 	return (0);
 }
-

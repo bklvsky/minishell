@@ -1,20 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sstyr <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/16 20:05:40 by sstyr             #+#    #+#             */
+/*   Updated: 2022/01/16 20:05:43 by sstyr            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "buildins.h"
-
-int		error_print_return(char *message)
-{
-	char	*error;
-
-	error = strerror(errno);
-	write(2, "minishell: ", 11);
-	if (message)
-	{
-		write(2, message, ft_strlen(message));
-		write(2, ": ", 2);
-	}
-	write(2, error, ft_strlen(error));
-	write(2, "\n", 1);
-	return (errno);
-}
 
 static int	error_cd(int mode, char *set)
 {
@@ -40,30 +36,28 @@ static int	error_cd(int mode, char *set)
 	return (1);
 }
 
-static char	*get_oldpwd(char **env)
+static char	*get_oldpwd(t_list *env)
 {
 	char	*old_pwd;
 
-	if (!(old_pwd = get_var_value("PWD", env)))
+	old_pwd = get_val_by_name(&env, "PWD");
+	if (old_pwd)
 	{
-		if (!(old_pwd = create_env_var("OLDPWD", "")))
-			return (NULL);
-	}
-	else
-	{
-		if (!(old_pwd = create_env_var("OLDPWD", old_pwd)))
+		old_pwd = change_var_val(&env, "OLDPWD", old_pwd);
+		if (!old_pwd)
 			return (NULL);
 	}
 	return (old_pwd);
 }
 
-static int	get_pwd(char **pwd)
+static int	get_pwd(char **pwd, t_list *env)
 {
 	char	*error;
 	char	*temp;
 
 	*pwd = NULL;
-	if (!(*pwd = getcwd(*pwd, PATH_MAX)))
+	*pwd = getcwd(*pwd, PATH_MAX);
+	if (!(*pwd))
 	{
 		error = strerror(errno);
 		write(2, "minishell: cd: ", 15);
@@ -72,7 +66,8 @@ static int	get_pwd(char **pwd)
 		return (errno);
 	}
 	temp = *pwd;
-	if (!(*pwd = create_env_var("PWD", *pwd)))
+	pwd = change_var_val(&env, "PWD", *pwd);
+	if (!(*pwd))
 	{
 		*pwd = NULL;
 		free(temp);
@@ -82,7 +77,7 @@ static int	get_pwd(char **pwd)
 	return (0);
 }
 
-static int	cd_to_dir(char **env, char *directory)
+static int	cd_to_dir(t_list *env, char *directory)
 {
 	char	*old_pwd;
 	char	*pwd;
@@ -91,37 +86,40 @@ static int	cd_to_dir(char **env, char *directory)
 	errno = 0;
 	if ((chdir(directory) != -1))
 	{
-		if (!(old_pwd = get_oldpwd(*env)))
+		old_pwd = get_oldpwd(env);
+		if (!old_pwd)
 			return (error_print_return("cd"));
-		if (replace_variable(env, old_pwd))
-		{
-			free(old_pwd);
-			return (error_print_return("cd"));
-		}
-		if ((err = get_pwd(&pwd)))
+		err = get_pwd(&pwd, env);
+		if (err)
 			return (err);
-		if (replace_variable(env, pwd, 0))
-		{
-			free(pwd);
-			return (error_print_return("cd"));
-		}
 	}
 	else
 		return (error_cd(1, directory));
 	return (0);
 }
 
-int mini_cd(char **args, char **env)
+int	ft_cd(char **args, char ***env)
 {
-	char  *dir;
-	if (args[1] && args[2])
-		return
-	dir = args[1];
-	if(!args[1])
-		if(!(dir = get_var_value("HOME", env)))
+	char	*dir;
+	t_list	*env_list;
+	int		res;
+
+	env_list = read_env(*env);
+	dir = args[0];
+	if (!args[0])
+	{
+		dir = get_val_by_name(&env_list, "HOME");
+		if (!dir)
 			return (error_cd(3, "HOME"));
-	if(args[1] && !ft_strncmp(args[1], "-", 2))
-		if (!(dir = get_var_value("OLDPWD", env)))
+	}
+	if (args[0] && !ft_strncmp(args[0], "-", 2))
+	{
+		dir = get_val_by_name(&env_list, "OLDPWD");
+		if (!dir)
 			return (error_cd(3, "OLDPWD"));
-	return (cd_to_dir(env, dir));
+	}
+	res = cd_to_dir(env_list, dir);
+	*env = env_to_strs(&env_list);
+	clear_env(&env_list);
+	return (res);
 }

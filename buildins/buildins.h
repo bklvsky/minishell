@@ -37,5 +37,6 @@ char	*change_var_val(t_list **env_list, char *name, char *new_val);
 char	**env_to_strs(t_list **env_list);
 void	clear_env(t_list **env_list);
 int		error_print_return(char *message);
+void	check_env_free(t_list **env_list, char ***env);
 
 #endif

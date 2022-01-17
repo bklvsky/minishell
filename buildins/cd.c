@@ -66,7 +66,7 @@ static int	get_pwd(char **pwd, t_list *env)
 		return (errno);
 	}
 	temp = *pwd;
-	pwd = change_var_val(&env, "PWD", *pwd);
+	*pwd = change_var_val(&env, "PWD", *pwd);
 	if (!(*pwd))
 	{
 		*pwd = NULL;
@@ -100,9 +100,9 @@ static int	cd_to_dir(t_list *env, char *directory)
 
 int	ft_cd(char **args, char ***env)
 {
-	char	*dir;
-	t_list	*env_list;
-	int		res;
+	char		*dir;
+	t_list		*env_list;
+	int			res;
 
 	env_list = read_env(*env);
 	dir = args[0];
@@ -119,6 +119,7 @@ int	ft_cd(char **args, char ***env)
 			return (error_cd(3, "OLDPWD"));
 	}
 	res = cd_to_dir(env_list, dir);
+	check_env_free(&env_list, env);
 	*env = env_to_strs(&env_list);
 	clear_env(&env_list);
 	return (res);

@@ -12,7 +12,7 @@
 
 #include "buildins.h"
 
-void	*del_env(void *content)
+void	del_env(void *content)
 {
 	t_env	*var;
 

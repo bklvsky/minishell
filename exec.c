@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 01:12:03 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/16 19:27:57 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/17 19:07:56 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,7 @@ int		find_exec(char **cmd_args, char **env)
 	}
 	ft_free_charmtrx(paths_tmp);
 	if (exec_path)
-	{
-		check_directory(exec_path, all);
 		execve(exec_path, cmd_args, env);
-	}
 	return (0);
 }
 
@@ -65,7 +62,7 @@ void	check_directory(char *bin_name, t_data *all)
 	struct stat data;
 
 	if (!stat(bin_name, &data))
-		if (data.st_mode & S_ISDIR)
+		if (data.st_mode & S_IFDIR)
 			all->error_message = ft_strdup("is a directory");
 }
 

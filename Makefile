@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+         #
+#    By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/27 21:46:39 by dselmy            #+#    #+#              #
-#    Updated: 2022/01/04 17:12:20 by dselmy           ###   ########.fr        #
+#    Updated: 2022/01/17 19:15:21 by dselmy           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 		@make -C $(LIBFT_DIR)
-		gcc -o $(NAME) $(CFLAGS) -I$(INC_DIR) $(OBJ) $(LIBFT_DIR)libft.a -L/Users/sstyr/.brew/Cellar/readline/8.1.1/lib -lreadline
+		gcc -o $(NAME) $(CFLAGS) -I$(INC_DIR) $(OBJ) $(LIBFT_DIR)libft.a -L/Users/dselmy/.brew/Cellar/readline/8.1.1/lib -lreadline
 
 %.o:	%.c
 		gcc -c $(CFLAGS) -I$(INC_DIR) $< -o $@ -MD

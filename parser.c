@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 18:45:15 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/16 20:16:31 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/17 20:13:20 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,19 +101,24 @@ void	recognise_tokens(t_data *all)
 	check_closed_quotes(quoted_flag, all);
 }
 
+
+
 void	parser(t_data *all)
 {
-	t_lst_d	*tmp;
-
-	tmp = all->tokens;
+//	t_lst_d	*tmp;
+//	tmp = all->tokens;
 	recognise_tokens(all);
 	parse_token(all);
+	check_built_ins(all->tokens);
+
+	/*
 	while (tmp)
 	{
+
 		ft_put_tokens(tmp->content);
 		ft_put_read_token(tmp->content);
 		tmp = tmp->next;
-	}
+	}*/
 }
 
 void	unknown_arguments(int argc, char **argv)
@@ -145,7 +150,7 @@ int		main(int argc, char **argv, char **envp)
 		{
 			inpt = readline("minishell: ");
 			add_history(inpt);
-			init_data(&all, inpt);
+			init_data(all, inpt);
 			parser(all);
 			launch_minishell(all, ft_lstdouble_size(all->tokens));
 			free(inpt);

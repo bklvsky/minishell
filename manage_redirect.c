@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   manage_redirect.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/25 16:30:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/14 03:17:39 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/17 17:50:24 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,13 @@ void	manage_redirections(int *i, t_token *cur_token, t_data *all)
 	new_lst = ft_lstnew(new_file);
 	if (!new_file || !new_lst)
 		error_exit(all);
-	ft_lstadd_back(&(cur_token->files), new_lst);
 	new_file->type_of_redirect = get_type_of_redirect(cur_token->token, i);
+	if (new_file->type_of_redirect == DOUBLE_IN)
+		new_file->is_heredoc = 1;
+	ft_lstadd_back(&(cur_token->files), new_lst);
 	skip_whitespaces(i, cur_token->token);
 	new_file->file_name = get_file_name(cur_token->token, i, all);
 	skip_whitespaces(i, cur_token->token);
 	if (!new_file->file_name || !new_file->file_name[0])
-		error_syntax_exit(all);
+		error_syntax_exit(all); // not exit but free_cmd and back to cycle
 }

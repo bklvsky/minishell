@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_open_files.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:55:21 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/12 00:27:02 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/17 20:14:10 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,37 @@ int	get_open_flags(int type_of_redirect)
 static int	check_and_open(t_file *file, int *fd)
 {
 	file->open_flags = get_open_flags(file->type_of_redirect);
-	if (*fd)
+	if (*fd > 0)
 		close(*fd);
 	if (file->type_of_redirect == SIMPLE_OUT || file->type_of_redirect == DOUBLE_OUT)
 		*fd = open(file->file_name, file->open_flags, 00644);
-	else
+	else if (file->type_of_redirect == SIMPLE_IN)
 		*fd = open(file->file_name, file->open_flags);
-	if (*fd < 0)
+	else
+		*fd = HEREDOC_FD;
+	if (*fd == -1)
 		return (-1);
 	return (1);
+}
+
+
+//void	get_heredoc(t_list *cur_file_data)
+void	get_heredoc(t_list *cur_file_data, t_token *token, t_data *all)
+{
+	t_file	*heredoc_data;
+	char	*input;
+	int		delimeter_len;
+
+	input = readline(">");
+	heredoc_data = (t_file *)cur_file_data->content;
+	delimeter_len = ft_strlen(heredoc_data->file_name);
+	while (ft_strncmp(input, heredoc_data->file_name, delimeter_len + 1))
+	{
+		if (!cur_file_data->next)
+			write(all->pipefd[1], input, ft_strlen(input));
+		free(input);
+		input = readline(">");
+	}
 }
 
 int	open_all_files(t_token *token, t_data *all)
@@ -56,6 +78,8 @@ int	open_all_files(t_token *token, t_data *all)
 			res = check_and_open((t_file *)tmp->content, &(token->fd_out));
 		else
 			res = check_and_open((t_file *)tmp->content, &(token->fd_in));
+		if (((t_file *)tmp->content)->is_heredoc)
+			get_heredoc(tmp, token, all);
 		if (res < 0)
 		{
 			all->error_ident = ft_strdup(((t_file *)tmp->content)->file_name);

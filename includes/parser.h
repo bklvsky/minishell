@@ -9,8 +9,9 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <sys/stat.h>
-# include "/Users/sstyr/.brew/Cellar/readline/8.1.1/include/readline/readline.h"
-# include "/Users/sstyr/.brew/Cellar/readline/8.1.1/include/readline/history.h"
+# include "/Users/dselmy/.brew/Cellar/readline/8.1.1/include/readline/readline.h"
+// # include "/Users/dselmy/.brew/Cellar/readline/8.1.1/include/readline/rlstd.h"
+# include "/Users/dselmy/.brew/Cellar/readline/8.1.1/include/readline/history.h"
 
 # define SINGLE_QUOTE 1
 # define DOUBLE_QUOTE 2
@@ -18,12 +19,14 @@
 # define DOUBLE_OUT 2
 # define SIMPLE_IN 3
 # define DOUBLE_IN 4
+# define HEREDOC_FD -2
 
 typedef struct s_file
 {
 	char		*file_name;
 	int			type_of_redirect;
 	int			open_flags;
+	int			is_heredoc;
 }				t_file;
 
 typedef struct s_token
@@ -49,6 +52,7 @@ typedef struct s_data
 {
 	t_lst_d	*tokens;
 	int		last_exit_status;
+	int		pipefd[2];
 	char	*line;
 	char	**env;
 	char	*error_ident;
@@ -94,6 +98,7 @@ void	check_directory(char *bin_name, t_data *all);
 int		manage_quotes(int c, int *quoted_flag);
 int		is_redirect(int c);
 void	skip_whitespaces(int *i, char *str);
+void	check_built_ins(t_lst_d *tokens);
 
 /*delete later*/
 

@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 19:03:07 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/16 19:02:02 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/17 19:11:50 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ void	init_struct_first(t_data **all, char **env)
 
 void	init_data(t_data *all, char *input)
 {
-	(*all)->tokens = new_token();
-	(*all)->line = ft_strdup(input);
-	if (!(*all)->tokens || !(*all)->line)
-		error_exit(*all);
+	(all)->tokens = new_token();
+	(all)->line = ft_strdup(input);
+	if (!(all)->tokens || !(all)->line)
+		error_exit(all);
 }

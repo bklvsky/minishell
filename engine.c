@@ -6,11 +6,16 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:03:45 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/14 20:59:28 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/17 20:12:26 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/parser.h"
+
+/*i need to create a pipe from the main process that will work in cases of
+builtins, and in case of heredocs
+builtins should not be a forked process 100% or the changes to t_data *all 
+would remain exclusively in this child process*/
 
 void	redirect_fds(t_lst_d *token, t_data *all)
 {
@@ -19,11 +24,11 @@ void	redirect_fds(t_lst_d *token, t_data *all)
 	token_data = (t_token *)token->content;
 	if (open_all_files(token_data, all) < 0)
 		error_launch_exit(token, all);
-	printf("fd in = %d, fd out = %d\n", token_data->fd_in, token_data->fd_out);
 	if (token_data->fd_in)
 	{
-		if (dup2(token_data->fd_in, 0) < 0)
-			error_launch_exit(token, all);
+		if (token_data->fd_in != HEREDOC_FD)
+			if (dup2(token_data->fd_in, 0) < 0)
+				error_launch_exit(token, all);
 	}
 	else if (token->prev && \
 				dup2(((t_token *)token->prev->content)->pipefd[0], 0) < 0)
@@ -67,17 +72,30 @@ void	launch_cmd(t_lst_d *token, t_data *all)
 	}
 }
 
+void	launch_built_in(t_lst_d *tmp, t_data *all)
+{
+	t_token	*token_data;
+	(void)all;
+	
+	token_data = (t_token *)tmp->content;
+	printf("in builtins %s\n", token_data->cmd[0]);
+}
+
 void	launch_minishell(t_data *all, int num_of_tokens)
 {
 	t_lst_d	*tmp;
 	
-	printf("num of tokens = %d\n", num_of_tokens);
 	if (num_of_tokens == 0)
 		return ;
 	tmp = all->tokens;
+	if (pipe(all->pipefd))
+		error_exit(all);
 	while (tmp)
 	{
-		launch_cmd(tmp, all);
+		if (((t_token *)tmp->content)->is_built_in)
+			launch_built_in(tmp, all);
+		else
+			launch_cmd(tmp, all);
 		tmp = tmp->next;
 	}
 }

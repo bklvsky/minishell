@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/13 22:41:05 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/16 20:01:17 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/17 19:14:04 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static void	free_token(void *ptr)
 
 	token = (t_token *)ptr;
 	if (token)
-	{…
+	{
 		free(token->token);
 		ft_free_charmtrx(token->cmd);
 		ft_lstclear(&(token->files), &free_file);

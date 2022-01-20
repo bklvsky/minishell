@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 01:12:03 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/17 19:07:56 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/20 19:27:37 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,13 @@ void	check_directory(char *bin_name, t_data *all)
 			all->error_message = ft_strdup("is a directory");
 }
 
+void	exec_builtin(char **cmd_args, t_data *all)
+{
+	(void)all;
+	printf("in builtins --%s\n", cmd_args[0]);
+	// don't exit with exit(), it happens in parents process
+}
+
 void	exec_cmd(char **cmd_args, t_data *all)
 {
 	if (cmd_args[0][0] != '/' && cmd_args[0][0] != '.')
@@ -76,11 +83,6 @@ void	exec_cmd(char **cmd_args, t_data *all)
 	}
 	else
 	{
-		/*this variant doesn't provide for an explanation explicit enough:
-		for example, if instead of a binary file there is a directory;
-		open() could have resolved this problem but!
-		it doesnt work on binary files, jokes on you
-		i guess it should be done using stat(), i'll try it later*/
 		if (access(cmd_args[0], F_OK & X_OK) == 0)
 		{
 			check_directory(cmd_args[0], all);

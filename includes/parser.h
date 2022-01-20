@@ -86,13 +86,14 @@ void	error_launch_exit(t_lst_d *token, t_data *all);
 void	error_syntax_exit(t_data *all);
 void	free_all(t_data *all);
 void	free_cmd(t_data *all);
-void	close_all(t_lst_d *token);
+void	close_all(t_lst_d *token, t_data *all);
 
 int		get_open_flags(int type_of_redirect);
 int		open_all_files(t_token *token, t_data *all);
 
 void	launch_minishell(t_data *all, int num_of_tokens);
 void	exec_cmd(char **cmd_args, t_data *all);
+void	exec_builtin(char **cmd_args, t_data *all);
 void	check_directory(char *bin_name, t_data *all);
 
 int		manage_quotes(int c, int *quoted_flag);

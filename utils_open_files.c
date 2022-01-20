@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:55:21 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/17 20:14:10 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/20 19:51:04 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,23 +46,28 @@ static int	check_and_open(t_file *file, int *fd)
 }
 
 
-//void	get_heredoc(t_list *cur_file_data)
-void	get_heredoc(t_list *cur_file_data, t_token *token, t_data *all)
+int	get_heredoc(t_list *cur_file_data, t_data *all)
 {
 	t_file	*heredoc_data;
 	char	*input;
 	int		delimeter_len;
 
+	if (!cur_file_data->next)
+		if (pipe(all->pipefd))
+			return (-1);
 	input = readline(">");
 	heredoc_data = (t_file *)cur_file_data->content;
 	delimeter_len = ft_strlen(heredoc_data->file_name);
-	while (ft_strncmp(input, heredoc_data->file_name, delimeter_len + 1))
+	while (input && ft_strncmp(input, heredoc_data->file_name, delimeter_len + 1))
 	{
 		if (!cur_file_data->next)
 			write(all->pipefd[1], input, ft_strlen(input));
 		free(input);
 		input = readline(">");
 	}
+	close(all->pipefd[1]);
+	free(input);
+	return (0);
 }
 
 int	open_all_files(t_token *token, t_data *all)
@@ -79,7 +84,8 @@ int	open_all_files(t_token *token, t_data *all)
 		else
 			res = check_and_open((t_file *)tmp->content, &(token->fd_in));
 		if (((t_file *)tmp->content)->is_heredoc)
-			get_heredoc(tmp, token, all);
+			if (get_heredoc(tmp, all) < 0)
+				error_pipe_exit();
 		if (res < 0)
 		{
 			all->error_ident = ft_strdup(((t_file *)tmp->content)->file_name);

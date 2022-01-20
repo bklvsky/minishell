@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:03:45 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/17 20:12:26 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/20 19:51:05 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,12 @@ void	redirect_fds(t_lst_d *token, t_data *all)
 	if (token_data->fd_in)
 	{
 		if (token_data->fd_in != HEREDOC_FD)
+		{
 			if (dup2(token_data->fd_in, 0) < 0)
+				error_launch_exit(token, all);
+		}
+		else
+			if (dup2(all->pipefd[0], 0) < 0)
 				error_launch_exit(token, all);
 	}
 	else if (token->prev && \
@@ -47,39 +52,53 @@ void	launch_cmd(t_lst_d *token, t_data *all)
 	pid_t	pid;
 	t_token	*token_data;
 
+	pid = 0;
 	token_data = (t_token *)token->content;
 	if (token->next)
 		if (pipe(token_data->pipefd))
 			error_pipe_exit(token, all);
-	pid = fork();
+	if (!token_data->is_built_in)
+		pid = fork();
 	if (pid < 0)
 		error_launch_exit(token, all);
-	else if (pid == 0)
+	else if (pid == 0) //if it is builtin than it just happens in parent process and everything is alright
 	{
 		redirect_fds(token, all);
 	//	if (token->next)
 	//		close(token_data->fd[0]);//not sure if i need it really or exec will close it
-		exec_cmd(token_data->cmd, all);
-		error_launch_exit(token, all);
+		if (token_data->is_built_in)
+		{
+			exec_builtin(token_data->cmd, all);
+			//error_launch_builtin
+		}
+		else
+		{
+			exec_cmd(token_data->cmd, all);
+			error_launch_exit(token, all);
+		}
 	}
-	else
+	if (pid > 0 || token_data->is_built_in)
 	{
+		//close pipefds in work
+		if (token_data->fd_in == HEREDOC_FD)
+			close(all->pipefd[0]);
 		if (token->prev)
 			close(((t_token *)token->prev->content)->pipefd[0]);
 		if (token->next)
 			close(token_data->pipefd[1]);
-		waitpid(pid, &all->last_exit_status, 0);
+		if (pid > 0)
+			waitpid(pid, &all->last_exit_status, 0);
 	}
 }
 
-void	launch_built_in(t_lst_d *tmp, t_data *all)
+/*void	launch_built_in(t_lst_d *tmp, t_data *all)
 {
 	t_token	*token_data;
 	(void)all;
 	
 	token_data = (t_token *)tmp->content;
 	printf("in builtins %s\n", token_data->cmd[0]);
-}
+}*/
 
 void	launch_minishell(t_data *all, int num_of_tokens)
 {
@@ -88,14 +107,10 @@ void	launch_minishell(t_data *all, int num_of_tokens)
 	if (num_of_tokens == 0)
 		return ;
 	tmp = all->tokens;
-	if (pipe(all->pipefd))
-		error_exit(all);
 	while (tmp)
 	{
-		if (((t_token *)tmp->content)->is_built_in)
-			launch_built_in(tmp, all);
-		else
-			launch_cmd(tmp, all);
+		// i need to pipe to t_data * all in case of heredoc
+		launch_cmd(tmp, all);
 		tmp = tmp->next;
 	}
 }

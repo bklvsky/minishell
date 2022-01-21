@@ -26,19 +26,21 @@ typedef struct s_env
 	char	*val;
 }			t_env;
 
-int		ft_echo(char **args);
-int		ft_cd(char **args, char ***env);
-int		ft_pwd(void);
-int		ft_exit(char **args, t_data **all, int mode);
+int				ft_echo(char **args);
+int				ft_cd(char **args, char ***env);
+int				ft_pwd(void);
+int				ft_exit(char **args, t_data **all, int mode);
 
-t_list	*read_env(char **strs);
-void	print_env(t_list **env_list);
-t_env	*get_var_by_name(t_list **env_list, char *name);
-char	*get_val_by_name(t_list **env_list, char *name);
-char	*change_var_val(t_list **env_list, char *name, char *new_val);
-char	**env_to_strs(t_list **env_list);
-void	clear_env(t_list **env_list);
-int		error_print_return(char *message);
-void	check_env_free(t_list **env_list, char ***env);
+t_list			*read_env(char **strs);
+void			print_env(t_list **env_list);
+t_env			*get_var_by_name(t_list **env_list, char *name);
+char			*get_val_by_name(t_list **env_list, char *name);
+char			*change_var_val(t_list **env_list, char *name, char *new_val);
+char			**env_to_strs(t_list **env_list);
+void			clear_env(t_list **env_list);
+int				error_print_return(char *message);
+void			check_env_free(t_list **env_list, char ***env);
+long int		check_overflow_sub(long int a, int *str_len);
+long long int	ft_atol(const char *str);
 
 #endif

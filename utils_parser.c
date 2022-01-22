@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_parser.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/24 19:10:22 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/17 20:13:22 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/22 02:37:32 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	skip_whitespaces(int *i, char *str)
 
 static int	is_builtin(char *cmd)
 {
-	return (!ft_strncmp(cmd, "echo", 5) | !!ft_strncmp(cmd, "cd", 3) | \
+	return (!ft_strncmp(cmd, "echo", 5) | !ft_strncmp(cmd, "cd", 3) | \
 	!ft_strncmp(cmd, "pwd", 4) | !ft_strncmp(cmd, "export", 7) | \
 	!ft_strncmp(cmd, "unset", 6) | !ft_strncmp(cmd, "env", 4) | \
 	!ft_strncmp(cmd, "exit", 4));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_shutdown.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/13 22:41:05 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/20 19:21:48 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/22 02:33:05 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ static void	close_file_fds(t_token *token_data)
 		close(token_data->fd_out);
 }
 
-void	close_all(t_lst_d *token, t_data *all)
+void	close_all(t_lst_d *token)
 {
 	close_file_fds((t_token *)token->content);
 	if (((t_token *)token->content)->fd_in == HEREDOC_FD)
-		close(all->pipefd[0]);
+		close(((t_token *)token->content)->heredoc_pipe[0]);
 	if (token->next)
 	{
 		close(((t_token *)token->content)->pipefd[0]);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 01:12:03 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/20 19:27:37 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/22 17:00:32 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,22 @@ void	check_directory(char *bin_name, t_data *all)
 	struct stat data;
 
 	if (!stat(bin_name, &data))
-		if (data.st_mode & S_IFDIR)
+		if (data.st_mode & 0x4000)
+		//if (data.st_mode & S_IFDIR)
 			all->error_message = ft_strdup("is a directory");
 }
 
 void	exec_builtin(char **cmd_args, t_data *all)
 {
+	if (!ft_strncmp(cmd_args[0], "pwd", 4))
+		ft_pwd();
+	else if (!ft_strncmp(cmd_args[0], "cd", 3))
+		ft_cd(cmd_args + 1, &(all->env));
+	else if (!ft_strncmp(cmd_args[0], "echo", 5))
+		ft_echo(cmd_args + 1);
+	else if (!ft_strncmp(cmd_args[0], "exit", 5))
+		ft_exit(cmd_args + 1, &all, 0);
+		
 	(void)all;
 	printf("in builtins --%s\n", cmd_args[0]);
 	// don't exit with exit(), it happens in parents process

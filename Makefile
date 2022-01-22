@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+         #
+#    By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/27 21:46:39 by dselmy            #+#    #+#              #
-#    Updated: 2022/01/17 19:15:21 by dselmy           ###   ########.fr        #
+#    Updated: 2022/01/22 17:14:38 by dselmy           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,9 +15,11 @@ NAME = parser
 INC_DIR = ./includes/
 LIBFT_DIR = ./libft/
 
-SRCS =	$(wildcard *.c)
+SRCS =	$(wildcard *.c) $(wildcard ./buildins/*.c)
+BUILDINS = $(wildcard ./buildins/*.c)
 OBJ = $(SRCS:.c=.o)
-DEP = $(SRCS:.c=.d)
+#OBJBUILDINS = $(BUILDINS:.c=.o)
+DEP = $(SRCS:.c=.d) 
 
 CFLAGS = -Wall -Werror -Wextra
 
@@ -25,10 +27,10 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 		@make -C $(LIBFT_DIR)
-		gcc -o $(NAME) $(CFLAGS) -I$(INC_DIR) $(OBJ) $(LIBFT_DIR)libft.a -L/Users/dselmy/.brew/Cellar/readline/8.1.1/lib -lreadline
+		gcc -o $(NAME) $(CFLAGS) -I./buildins/ -I$(INC_DIR) $(OBJ) $(LIBFT_DIR)libft.a -L/Users/dselmy/.brew/Cellar/readline/8.1.1/lib -lreadline
 
 %.o:	%.c
-		gcc -c $(CFLAGS) -I$(INC_DIR) $< -o $@ -MD
+		gcc -c $(CFLAGS) -I./buildins/ -I$(INC_DIR) $< -o $@ -MD
 
 clean:
 		@make clean -C $(LIBFT_DIR)

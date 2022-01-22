@@ -9,6 +9,8 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <sys/stat.h>
+//# include <readline/readline.h>
+//# include <readline/history.h>
 # include "/Users/dselmy/.brew/Cellar/readline/8.1.1/include/readline/readline.h"
 // # include "/Users/dselmy/.brew/Cellar/readline/8.1.1/include/readline/rlstd.h"
 # include "/Users/dselmy/.brew/Cellar/readline/8.1.1/include/readline/history.h"
@@ -36,6 +38,7 @@ typedef struct s_token
 	char		**cmd;
 	t_list		*files;
 	int			pipefd[2];
+	int			heredoc_pipe[2];
 	int			fd_in;
 	int			fd_out;
 	int			is_built_in;
@@ -52,12 +55,13 @@ typedef struct s_data
 {
 	t_lst_d	*tokens;
 	int		last_exit_status;
-	int		pipefd[2];
 	char	*line;
 	char	**env;
 	char	*error_ident;
 	char	*error_message;
 }			t_data;
+
+# include "../buildins/buildins.h"
 
 t_lst_d	*ft_lstdouble_new(void *elem);
 void	ft_lstdouble_add_back(t_lst_d **head, t_lst_d *new);
@@ -86,7 +90,7 @@ void	error_launch_exit(t_lst_d *token, t_data *all);
 void	error_syntax_exit(t_data *all);
 void	free_all(t_data *all);
 void	free_cmd(t_data *all);
-void	close_all(t_lst_d *token, t_data *all);
+void	close_all(t_lst_d *token);
 
 int		get_open_flags(int type_of_redirect);
 int		open_all_files(t_token *token, t_data *all);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   engine.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:03:45 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/20 19:51:05 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/22 03:06:11 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	redirect_fds(t_lst_d *token, t_data *all)
 				error_launch_exit(token, all);
 		}
 		else
-			if (dup2(all->pipefd[0], 0) < 0)
+			if (dup2(token_data->heredoc_pipe[0], 0) < 0)
 				error_launch_exit(token, all);
 	}
 	else if (token->prev && \
@@ -69,7 +69,6 @@ void	launch_cmd(t_lst_d *token, t_data *all)
 		if (token_data->is_built_in)
 		{
 			exec_builtin(token_data->cmd, all);
-			//error_launch_builtin
 		}
 		else
 		{
@@ -81,7 +80,7 @@ void	launch_cmd(t_lst_d *token, t_data *all)
 	{
 		//close pipefds in work
 		if (token_data->fd_in == HEREDOC_FD)
-			close(all->pipefd[0]);
+			close(token_data->heredoc_pipe[0]);
 		if (token->prev)
 			close(((t_token *)token->prev->content)->pipefd[0]);
 		if (token->next)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shutdown.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 19:38:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/20 19:26:42 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/22 02:36:04 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,13 @@ void	error_pipe_exit(t_lst_d *token, t_data *all)
 
 void	error_launch_builtin(t_lst_d *token, t_data *all)
 {
-	close_all(token, all);
+	(void)all;
+	close_all(token);
 }
 
 void	error_launch_exit(t_lst_d *token, t_data *all)
 {
-	close_all(token, all);
+	close_all(token);
 	error_exit(all); 
 }
 

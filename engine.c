@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:03:45 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/22 03:06:11 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/22 23:21:07 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,8 @@ void	launch_minishell(t_data *all, int num_of_tokens)
 	{
 		// i need to pipe to t_data * all in case of heredoc
 		launch_cmd(tmp, all);
+		if (all->last_exit_status)
+			all->last_exit_status = all->last_exit_status >> 8;
 		tmp = tmp->next;
 	}
 }

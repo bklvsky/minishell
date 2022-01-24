@@ -153,7 +153,7 @@ int		main(int argc, char **argv, char **envp)
 			init_data(all, inpt);
 			parser(all);
 			launch_minishell(all, ft_lstdouble_size(all->tokens));
-			free(inpt);
+//			free(inpt);
 			free_cmd(all);
 //			exit(0);
 		}

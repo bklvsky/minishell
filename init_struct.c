@@ -27,7 +27,7 @@ void	init_struct_first(t_data **all, char **env)
 void	init_data(t_data *all, char *input)
 {
 	(all)->tokens = new_token();
-	(all)->line = ft_strdup(input);
+	(all)->line = input;
 	if (!(all)->tokens || !(all)->line)
 		error_exit(all);
 }

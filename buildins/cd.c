@@ -119,7 +119,7 @@ int	ft_cd(char **args, char ***env)
 			return (error_cd(3, "OLDPWD"));
 	}
 	res = cd_to_dir(env_list, dir);
-	check_env_free(&env_list, env);
+	ft_free_charmtrx(*env);
 	*env = env_to_strs(&env_list);
 	clear_env(&env_list);
 	return (res);

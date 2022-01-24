@@ -39,7 +39,6 @@ char			*change_var_val(t_list **env_list, char *name, char *new_val);
 char			**env_to_strs(t_list **env_list);
 void			clear_env(t_list **env_list);
 int				error_print_return(char *message);
-void			check_env_free(t_list **env_list, char ***env);
 long int		check_overflow_sub(long int a, int *str_len);
 long long int	ft_atol(const char *str);
 

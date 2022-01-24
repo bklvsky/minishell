@@ -70,13 +70,13 @@ void	check_directory(char *bin_name, t_data *all)
 void	exec_builtin(char **cmd_args, t_data *all)
 {
 	if (!ft_strncmp(cmd_args[0], "pwd", 4))
-		ft_pwd();
+		ft_pwd(all);
 	else if (!ft_strncmp(cmd_args[0], "cd", 3))
 		ft_cd(cmd_args + 1, &(all->env));
 	else if (!ft_strncmp(cmd_args[0], "echo", 5))
 		ft_echo(cmd_args + 1);
 	else if (!ft_strncmp(cmd_args[0], "exit", 5))
-		ft_exit(cmd_args + 1, &all, 0);
+		ft_exit(cmd_args + 1, &all);
 		
 	(void)all;
 	printf("in builtins --%s\n", cmd_args[0]);

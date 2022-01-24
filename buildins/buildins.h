@@ -28,8 +28,8 @@ typedef struct s_env
 
 int				ft_echo(char **args);
 int				ft_cd(char **args, char ***env);
-int				ft_pwd(void);
-int				ft_exit(char **args, t_data **all, int mode);
+int				ft_pwd(t_data *all);
+int				ft_exit(char **args, t_data **all);
 
 t_list			*read_env(char **strs);
 void			print_env(t_list **env_list);

@@ -19,8 +19,7 @@ static int	error_too_many_args(void)
 	return (1);
 }
 
-static int	error_numeric_argument(char *wrong_argument, char **args,
-									t_data **all)
+static int	error_numeric_argument(char *wrong_argument, t_data **all)
 {
 	write(2, "minishell: exit: ", 17);
 	write(2, wrong_argument, ft_strlen(wrong_argument));
@@ -58,9 +57,8 @@ static int	check_overflow(long int code, char *argument)
 static long int	norm_exit(long int code, char **args, t_data **all)
 {
 	if (args[1] && check_overflow(code, args[1]))
-		return (error_numeric_argument(args[1], args, all, mode));
+		return (error_numeric_argument(args[1], all));
 	free_all(*all);
-	ft_free_charmtrx(args);
 	return (code);
 }
 
@@ -81,7 +79,7 @@ int	ft_exit(char **args, t_data **all)
 			if (args[1][index] == '\0')
 				exit(norm_exit(ft_atol(args[1]), args, all));
 			else
-				exit(error_numeric_argument(args[1], args, all));
+				exit(error_numeric_argument(args[1], all));
 		}
 		else
 			return (error_too_many_args());

@@ -15,7 +15,7 @@ long int	check_overflow_sub(long int a, int *str_len)
 	if (a < 0)
 	{
 		a *= -1;
-		*str_len--;
+		*str_len = *str_len - 1;
 	}
 	return (a);
 }

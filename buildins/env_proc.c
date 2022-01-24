@@ -45,6 +45,7 @@ void	print_env(t_list **env_list)
 	t_list	*tmp;
 	t_env	*var;
 
+	tmp = NULL;
 	if (*env_list)
 		tmp = *env_list;
 	while (tmp->next)
@@ -60,6 +61,7 @@ t_env	*get_var_by_name(t_list **env_list, char *name)
 	t_list	*tmp;
 	t_env	*var;
 
+	tmp = NULL;
 	if (*env_list)
 		tmp = *env_list;
 	while (tmp->next)
@@ -77,6 +79,7 @@ char	*get_val_by_name(t_list **env_list, char *name)
 	t_list	*tmp;
 	t_env	*var;
 
+	tmp = NULL;
 	if (*env_list)
 		tmp = *env_list;
 	while (tmp->next)

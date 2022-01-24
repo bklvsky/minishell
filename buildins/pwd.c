@@ -12,7 +12,7 @@
 
 #include "buildins.h"
 
-int	ft_pwd(void)
+int	ft_pwd(t_data *all)
 {
 	char	*buffer;
 	char	*error;
@@ -23,7 +23,7 @@ int	ft_pwd(void)
 	if (!buffer)
 	{
 		write(2, "minishell: pwd: ", 16);
-		error = strerror(errno);
+		all->error_ident = ft_strdup("pwd");
 		write(2, error, ft_strlen(error));
 		return (errno);
 	}

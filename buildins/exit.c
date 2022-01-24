@@ -13,23 +13,18 @@
 #include "buildins.h"
 #include "../includes/parser.h"
 
-static int	error_too_many_args(int mode)
+static int	error_too_many_args(void)
 {
-	if (mode != 1)
-		write(2, "exit\n", 5);
 	write(2, "minishell: exit: too many arguments\n", 36);
 	return (1);
 }
 
-static int	error_numeric_argument(char *wrong_argument, char **args, \
-	t_data **all, int mode)
+static int	error_numeric_argument(char *wrong_argument, char **args,
+									t_data **all)
 {
-	if (mode != 1)
-		write(2, "exit\n", 5);
 	write(2, "minishell: exit: ", 17);
 	write(2, wrong_argument, ft_strlen(wrong_argument));
 	write(2, ": numeric argument required\n", 28);
-	ft_free_charmtrx(args);
 	free_all(*all);
 	return (2);
 }
@@ -60,20 +55,16 @@ static int	check_overflow(long int code, char *argument)
 	return (0);
 }
 
-static long int	norm_exit(long int code, char **args, t_data **all, int mode)
+static long int	norm_exit(long int code, char **args, t_data **all)
 {
 	if (args[1] && check_overflow(code, args[1]))
 		return (error_numeric_argument(args[1], args, all, mode));
-	if (mode != 1)
-	{
-		write(2, "exit\n", 5);
-	}
 	free_all(*all);
 	ft_free_charmtrx(args);
 	return (code);
 }
 
-int	ft_exit(char **args, t_data **all, int mode)
+int	ft_exit(char **args, t_data **all)
 {
 	int			index;
 
@@ -88,12 +79,12 @@ int	ft_exit(char **args, t_data **all, int mode)
 					(args[1][index] == '-' || args[1][index] == '+')))
 					break ;
 			if (args[1][index] == '\0')
-				exit(norm_exit(ft_atol(args[1]), args, all, mode));
+				exit(norm_exit(ft_atol(args[1]), args, all));
 			else
-				exit(error_numeric_argument(args[1], args, all, mode));
+				exit(error_numeric_argument(args[1], args, all));
 		}
 		else
-			return (error_too_many_args(mode));
+			return (error_too_many_args());
 	}
-	exit(norm_exit(0, args, all, mode));
+	exit(norm_exit(0, args, all));
 }

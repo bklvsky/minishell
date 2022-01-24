@@ -30,16 +30,16 @@ static int	check_flag(char *argument)
 int	ft_echo(char **args)
 {
 	int		index;
-	int		temp;
 	int		flag;
 
 	index = 0;
 	flag = 0;
-	temp = check_flag(args[index]);
-	while (args[++index])
+	while (args[index])
 	{
-		temp = check_flag(args[index]);
-		flag = temp;
+		flag = check_flag(args[index]);
+		if (!flag)
+			break ;
+		index++;
 	}
 	while (args[index])
 	{

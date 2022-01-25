@@ -38,7 +38,7 @@ static int	check_overflow(long int code, char *argument)
 	if (!ft_strncmp(argument, "-9223372036854775808", ft_strlen(argument)))
 		return (0);
 	str_len = ft_strlen(argument);
-	num_len = 1;
+	num_len = 0;
 	if ((argument[0] == '+' && code < 0) || (argument[0] != '-' && code < 0))
 		return (1);
 	if (argument[0] == '+')
@@ -51,13 +51,14 @@ static int	check_overflow(long int code, char *argument)
 	}
 	if (str_len != num_len)
 		return (1);
+
 	return (0);
 }
 
 static long int	norm_exit(long int code, char **args, t_data **all)
 {
-	if (args[1] && check_overflow(code, args[1]))
-		return (error_numeric_argument(args[1], all));
+	if (args[0] && check_overflow(code, args[0]))
+		return (error_numeric_argument(args[0], all));
 	free_all(*all);
 	return (code);
 }
@@ -68,20 +69,19 @@ int	ft_exit(char **args, t_data **all)
 
 	index = -1;
 	errno = 0;
-	if (args[1])
+	if (args[0])
 	{
-		if (!args[2])
+		if (!args[1])
 		{
-			while (args[1][++index])
-				if (!ft_isdigit(args[1][index]) && !(index == 0 && \
-					(args[1][index] == '-' || args[1][index] == '+')))
-					break ;
-			if (args[1][index] == '\0')
-				exit(norm_exit(ft_atol(args[1]), args, all));
+			while (args[0][++index])
+				if (!ft_isdigit(args[0][index]) && !(index == 0 && \
+                   (args[0][index] == '-' || args[0][index] == '+')))
+					break;
+			if (args[0][index] == '\0')
+				exit(norm_exit(ft_atol(args[0]), args, all));
 			else
-				exit(error_numeric_argument(args[1], all));
-		}
-		else
+				exit(error_numeric_argument(args[0], all));
+		} else
 			return (error_too_many_args());
 	}
 	exit(norm_exit(0, args, all));

@@ -148,6 +148,8 @@ int		main(int argc, char **argv, char **envp)
 		init_struct_first(&all, envp);
 		while(1)
 		{
+			signal(SIGQUIT, SIG_IGN);
+			signal(SIGINT, &sig_int);
 			inpt = readline("minishell: ");
 			add_history(inpt);
 			init_data(all, inpt);

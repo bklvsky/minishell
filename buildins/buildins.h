@@ -30,6 +30,7 @@ int				ft_echo(char **args);
 int				ft_cd(char **args, char ***env);
 int				ft_pwd(t_data *all);
 int				ft_exit(char **args, t_data **all);
+int				ft_env(char **env);
 
 t_list			*read_env(char **strs);
 void			print_env(t_list **env_list);

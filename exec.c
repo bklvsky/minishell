@@ -77,6 +77,8 @@ void	exec_builtin(char **cmd_args, t_data *all)
 		ft_echo(cmd_args + 1);
 	else if (!ft_strncmp(cmd_args[0], "exit", 5))
 		ft_exit(cmd_args + 1, &all);
+	else if (!ft_strncmp(cmd_args[0], "env", 3))
+		ft_env(all->env);
 		
 	(void)all;
 	printf("in builtins --%s\n", cmd_args[0]);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   buildins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sstyr <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/16 20:08:12 by sstyr             #+#    #+#             */
-/*   Updated: 2022/01/16 20:08:13 by sstyr            ###   ########.fr       */
+/*   Updated: 2022/01/26 01:34:02 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int				ft_cd(char **args, char ***env);
 int				ft_pwd(t_data *all);
 int				ft_exit(char **args, t_data **all);
 int				ft_env(char **env);
+int				ft_unset(char **args, t_data **all);
 
 t_list			*read_env(char **strs);
 void			print_env(t_list **env_list);

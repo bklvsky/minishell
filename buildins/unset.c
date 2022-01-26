@@ -6,20 +6,20 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/25 23:39:17 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/26 01:38:32 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/26 22:47:02 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "buildins.h"
 
-static int	arg_is_valid(char *arg)
+int	env_arg_name_is_valid(char *arg, size_t name_len)
 {
-	int		i;
+	size_t	i;
 
 	i = 0;
 	if (!ft_isalpha(arg[0]) && arg[0] != '_')
 		return (0);
-	while (arg[i])
+	while (i < name_len)
 	{
 		if (!ft_isalnum(arg[i]) && arg[i] != '_')
 			return (0);
@@ -28,13 +28,11 @@ static int	arg_is_valid(char *arg)
 	return (1);
 }
 
-static int	find_env_var(char *name_var, char **env)
+int	find_env_var(int name_len, char *name_var, char **env)
 {
 	int		i;
-	size_t	name_len;
 
 	i = 0;
-	name_len = ft_strlen(name_var);
 	while (env[i])
 	{
 		if (ft_strncmp(name_var, env[i], name_len) == 0 && \
@@ -87,9 +85,9 @@ int	ft_unset(char **args, t_data **all)
 	i = 0;
 	while (args[i])
 	{
-		if (arg_is_valid(args[i]))
+		if (env_arg_name_is_valid(args[i], ft_strlen(args[i])))
 		{
-			env_index = find_env_var(args[i], (*all)->env);
+			env_index = find_env_var(ft_strlen(args[i]), args[i], (*all)->env);
 			if (env_index >= 0)
 				if (del_var(env_index, &(*all)->env) < 0)
 					return (-1);

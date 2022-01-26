@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 01:12:03 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/22 17:00:32 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/26 04:55:21 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,12 @@ void	exec_builtin(char **cmd_args, t_data *all)
 		ft_echo(cmd_args + 1);
 	else if (!ft_strncmp(cmd_args[0], "exit", 5))
 		ft_exit(cmd_args + 1, &all);
-	else if (!ft_strncmp(cmd_args[0], "env", 3))
+	else if (!ft_strncmp(cmd_args[0], "env", 4))
 		ft_env(all->env);
-		
-	(void)all;
-	printf("in builtins --%s\n", cmd_args[0]);
+	else if (!ft_strncmp(cmd_args[0], "unset", 6))
+		ft_unset(cmd_args + 1, &all);
+	else if (!ft_strncmp(cmd_args[0], "export", 7))
+		ft_export(cmd_args + 1, &all);
 	// don't exit with exit(), it happens in parents process
 }
 

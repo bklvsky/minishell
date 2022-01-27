@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sstyr <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/16 20:05:54 by sstyr             #+#    #+#             */
-/*   Updated: 2022/01/16 20:05:55 by sstyr            ###   ########.fr       */
+/*   Updated: 2022/01/28 02:31:41 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ int	ft_echo(char **args)
 			break ;
 		index++;
 	}
+	if (index != 0)
+		flag = 1;
 	while (args[index])
 	{
 		write(1, args[index], ft_strlen(args[index]));

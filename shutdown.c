@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 19:38:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/27 04:58:33 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/28 02:39:43 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,10 @@ void	error_launch_exit(t_lst_d *token, t_data *all)
 
 void	error_exit(t_data *all)
 {
-	put_error(all);
+	if (errno || all->error_ident || all->error_message)
+		put_error(all);
+	else
+		write(1, "\n", 1);
 	if (all)
 		close_heredocs(all->tokens);
 	free_all(all);

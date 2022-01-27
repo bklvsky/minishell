@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/13 22:41:05 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/22 02:33:05 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/27 04:51:59 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@ static void	close_file_fds(t_token *token_data)
 void	close_all(t_lst_d *token)
 {
 	close_file_fds((t_token *)token->content);
-	if (((t_token *)token->content)->fd_in == HEREDOC_FD)
-		close(((t_token *)token->content)->heredoc_pipe[0]);
 	if (token->next)
 	{
 		close(((t_token *)token->content)->pipefd[0]);
@@ -65,6 +63,8 @@ void	free_cmd(t_data *all)
 		all->error_ident = NULL;
 		free(all->error_message);
 		all->error_message = NULL;
+		free(all->line);
+		all->line = NULL;
 		ft_lstdouble_clear(&(all->tokens), &free_token);
 		all->tokens = NULL;
 	}

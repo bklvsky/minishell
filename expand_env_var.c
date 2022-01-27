@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_env_var.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 02:35:01 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/16 20:01:16 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/26 05:55:28 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,26 @@ char	*get_var_value(char *var_name, char **env)
 {
 	char	*env_name;
 	int		i;
+	char	*eq_ptr;
 
 	i = 0;
 	if (!var_name[0])
 		return (ft_strdup("$"));
 	while (env[i])
 	{
-		env_name = ft_substr(env[i], 0, ft_strchr(env[i], '=') - env[i]);
+		eq_ptr = ft_strchr(env[i],'=');
+		if (!eq_ptr)
+			env_name = ft_strdup(env[i]);
+		else
+			env_name = ft_substr(env[i], 0, eq_ptr - env[i]);
 		if (!env_name)
 			return (NULL);
 		if (!ft_strncmp(var_name, env_name, ft_strlen(var_name) + 1))
 		{
 			free(env_name);
-			return (ft_strdup(ft_strchr(env[i], '=') + 1));
+			if (eq_ptr)
+				return (ft_strdup(eq_ptr + 1));
+			break ;
 		}
 		free(env_name);
 		i++;

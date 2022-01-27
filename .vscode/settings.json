@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "stdlib.h": "c",
-        "parser.h": "c"
+        "parser.h": "c",
+        "buildins.h": "c",
+        "typeinfo": "c"
     }
 }

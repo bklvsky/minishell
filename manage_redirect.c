@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   manage_redirect.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/25 16:30:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/17 17:50:24 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/27 04:43:35 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,43 +36,91 @@ int	get_type_of_redirect(char *line, int *i)
 	}
 }
 
-char	*get_file_name(char *line, int *i, t_data *all)
+void	get_file_name(char *line, int *i, t_file *file_data, t_data *all)
 {
-	char	*name;
 	int		quoted_flag;
+	int		j;
 	
-	name = NULL;
 	quoted_flag = 0;
-	while (line[*i])
+	j = *i;
+	while (line[j])
 	{
-		if (!quoted_flag && (line[*i] == ' ' || is_redirect(line[*i])))
+		if (!quoted_flag && (line[j] == ' ' || is_redirect(line[j])))
 			break ;
-		else if (manage_quotes(line[*i], &quoted_flag))
-			*i += 1;
-		else if (line[*i] == '$' && quoted_flag != SINGLE_QUOTE)
-			*i += expand_env_var(&name, line + *i, all);
+		else if (manage_quotes(line[j], &quoted_flag))
+			j += 1;
+		else if (line[j] == '$' && quoted_flag != SINGLE_QUOTE \
+								&& file_data->type_of_redirect != DOUBLE_IN)
+			j += expand_env_var(&(file_data->file_name), line + j, all);
 		else
-			*i += write_in_current_arg(quoted_flag, &name, line + *i, all);
+			j += write_in_current_arg(quoted_flag, &(file_data->file_name), line + j, all);
 	}
-	return (name);
+	if (!file_data->file_name || !file_data->file_name[0])
+	{
+		file_data->file_name = ft_substr(line, *i, j - *i);
+		if (!file_data)
+			error_exit(all);
+		file_data->ambiguous_redir = 1;
+	}
+	*i = j;
 }
 
-void	manage_redirections(int *i, t_token *cur_token, t_data *all)
+int	get_heredoc(t_file	*file_data)
+{
+	char	*input;
+	int		delimeter_len;
+
+	file_data->is_heredoc = 1;
+	delimeter_len = ft_strlen(file_data->file_name);
+	if (pipe(file_data->heredoc_pipe))
+		return (-1);
+	input = readline(">");
+	while (input && ft_strncmp(input, file_data->file_name, delimeter_len + 1))
+	{
+		write(file_data->heredoc_pipe[1], input, ft_strlen(input));
+		write(file_data->heredoc_pipe[1], "\n", 1);
+		free(input);
+		input = readline(">");
+	}
+	close(file_data->heredoc_pipe[1]);
+	free(input);
+	return (0);
+}
+
+int	add_new_file(t_file **new_file, t_list **head_files)
+{
+	t_list	*new_lst;
+	
+	*new_file = (t_file *)ft_calloc(1, sizeof(t_file));
+	if (!*new_file)
+		return (-1);
+	new_lst = ft_lstnew(*new_file);
+	if (!new_lst)
+	{
+		free(*new_file);
+		return (-1);
+	}
+	ft_lstadd_back(head_files, new_lst);
+	return (0);
+}
+
+int	manage_redirections(int *i, t_token *cur_token, t_data *all)
 {
 	t_file	*new_file;
-	t_list	*new_lst;
+	int		flag_env_var;
 
-	new_file = (t_file *)malloc(sizeof(t_file));
-	new_lst = ft_lstnew(new_file);
-	if (!new_file || !new_lst)
+	flag_env_var = 0;
+	if (add_new_file(&new_file, &(cur_token->files)) < 0)
 		error_exit(all);
 	new_file->type_of_redirect = get_type_of_redirect(cur_token->token, i);
+	skip_whitespaces(i, cur_token->token);
+	if ((cur_token->token)[*i] == '$')
+		flag_env_var = 1;
+	get_file_name(cur_token->token, i, new_file, all);
+	skip_whitespaces(i, cur_token->token);
+	if ((!new_file->file_name || !new_file->file_name[0]) && !flag_env_var)
+		return (-1);// not exit but free_cmd and back to cycle
 	if (new_file->type_of_redirect == DOUBLE_IN)
-		new_file->is_heredoc = 1;
-	ft_lstadd_back(&(cur_token->files), new_lst);
-	skip_whitespaces(i, cur_token->token);
-	new_file->file_name = get_file_name(cur_token->token, i, all);
-	skip_whitespaces(i, cur_token->token);
-	if (!new_file->file_name || !new_file->file_name[0])
-		error_syntax_exit(all); // not exit but free_cmd and back to cycle
+		get_heredoc(new_file); //check_for_pipe_error
+	return (0);
 }

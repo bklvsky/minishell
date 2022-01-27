@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:03:45 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/22 23:21:07 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/27 00:45:03 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,8 @@ void	redirect_fds(t_lst_d *token, t_data *all)
 		error_launch_exit(token, all);
 	if (token_data->fd_in)
 	{
-		if (token_data->fd_in != HEREDOC_FD)
-		{
-			if (dup2(token_data->fd_in, 0) < 0)
-				error_launch_exit(token, all);
-		}
-		else
-			if (dup2(token_data->heredoc_pipe[0], 0) < 0)
-				error_launch_exit(token, all);
+		if (dup2(token_data->fd_in, 0) < 0)
+			error_launch_exit(token, all);
 	}
 	else if (token->prev && \
 				dup2(((t_token *)token->prev->content)->pipefd[0], 0) < 0)
@@ -67,9 +61,7 @@ void	launch_cmd(t_lst_d *token, t_data *all)
 	//	if (token->next)
 	//		close(token_data->fd[0]);//not sure if i need it really or exec will close it
 		if (token_data->is_built_in)
-		{
 			exec_builtin(token_data->cmd, all);
-		}
 		else
 		{
 			exec_cmd(token_data->cmd, all);
@@ -79,8 +71,8 @@ void	launch_cmd(t_lst_d *token, t_data *all)
 	if (pid > 0 || token_data->is_built_in)
 	{
 		//close pipefds in work
-		if (token_data->fd_in == HEREDOC_FD)
-			close(token_data->heredoc_pipe[0]);
+		if (token_data->fd_in)
+			close(token_data->fd_in);
 		if (token->prev)
 			close(((t_token *)token->prev->content)->pipefd[0]);
 		if (token->next)

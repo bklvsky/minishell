@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 18:45:15 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/17 20:13:20 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/27 04:53:02 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int		write_in_token(t_token *token, char c)
 	return (0);
 }
 
-void	check_closed_quotes(int quoted_flag, t_data *all)
+int	check_closed_quotes(int quoted_flag, t_data *all)
 {
 	if (quoted_flag)
 	{
@@ -62,8 +62,9 @@ void	check_closed_quotes(int quoted_flag, t_data *all)
 		else
 			all->error_message = ft_strdup\
 			("unexpected newline while looking for matching '\"'");
-		error_exit(all); // not exit but back to the cycle
+		return (error_syntax_exit(0, NULL, all)); // not exit but back to the cycle
 	}
+	return (0);
 }
 
 void	new_pipe_token(t_data *all)
@@ -76,7 +77,7 @@ void	new_pipe_token(t_data *all)
 	ft_lstdouble_add_back(&(all->tokens), new);
 }
 
-void	recognise_tokens(t_data *all)
+int	recognise_tokens(t_data *all)
 {
 	int			quoted_flag;
 	int			i;
@@ -98,27 +99,17 @@ void	recognise_tokens(t_data *all)
 			tmp = tmp->next;
 		}
 	}
-	check_closed_quotes(quoted_flag, all);
+	return (check_closed_quotes(quoted_flag, all));
 }
 
-
-
-void	parser(t_data *all)
+int	parser(t_data *all)
 {
-//	t_lst_d	*tmp;
-//	tmp = all->tokens;
-	recognise_tokens(all);
-	parse_token(all);
+	if (recognise_tokens(all) < 0)
+		return (-1);
+	if (parse_token(all) < 0)
+		return (-1);
 	check_built_ins(all->tokens);
-
-	/*
-	while (tmp)
-	{
-
-		ft_put_tokens(tmp->content);
-		ft_put_read_token(tmp->content);
-		tmp = tmp->next;
-	}*/
+	return (0);
 }
 
 void	unknown_arguments(int argc, char **argv)
@@ -151,13 +142,14 @@ int		main(int argc, char **argv, char **envp)
 			signal(SIGQUIT, SIG_IGN);
 			signal(SIGINT, &sig_int);
 			inpt = readline("minishell: ");
-			add_history(inpt);
 			init_data(all, inpt);
-			parser(all);
-			launch_minishell(all, ft_lstdouble_size(all->tokens));
-//			free(inpt);
+			if (*inpt)
+			{
+				add_history(inpt);
+				if (!parser(all))
+					launch_minishell(all, ft_lstdouble_size(all->tokens));
+			}
 			free_cmd(all);
-//			exit(0);
 		}
 	}
 	else

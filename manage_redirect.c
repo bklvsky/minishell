@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/25 16:30:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/27 04:43:35 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/28 02:21:59 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,14 +74,17 @@ int	get_heredoc(t_file	*file_data)
 	delimeter_len = ft_strlen(file_data->file_name);
 	if (pipe(file_data->heredoc_pipe))
 		return (-1);
-	input = readline(">");
+	input = readline("> ");
 	while (input && ft_strncmp(input, file_data->file_name, delimeter_len + 1))
 	{
 		write(file_data->heredoc_pipe[1], input, ft_strlen(input));
 		write(file_data->heredoc_pipe[1], "\n", 1);
 		free(input);
-		input = readline(">");
+		input = readline("> ");
 	}
+	if (!input)
+		printf("minishell: warning: here-document delimited \
+by end-of-file (wanted '%s')\n", file_data->file_name);
 	close(file_data->heredoc_pipe[1]);
 	free(input);
 	return (0);

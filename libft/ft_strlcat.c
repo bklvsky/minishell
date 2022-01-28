@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/14 13:40:38 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/14 01:33:07 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/28 20:24:05 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ size_t	ft_strlcat(char *dst, const char *src, size_t size)
 	d_len = ft_strlen(dst);
 	dst += d_len;
 	while (*ptr && size > d_len + 1)
-	{		*dst++ = *ptr++;
+	{
+		*dst++ = *ptr++;
 		size--;
 	}
 	if (size > d_len)

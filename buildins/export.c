@@ -6,19 +6,19 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 01:40:59 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/26 22:47:15 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/28 04:14:14 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "buildins.h"
 
-static void	put_sort_env(char **env)
+static void	put_sort_env(int fd_out, char **env)
 {
 	char	**sort_env;
 
 	sort_env = ft_charmtrx_dup(env);
 	sort_environ(sort_env, 0, ft_charmtrx_len(sort_env) - 1);
-	export_env(sort_env);
+	export_env(fd_out, sort_env);
 	ft_free_charmtrx(sort_env);
 }
 
@@ -70,14 +70,14 @@ int	write_var_in_env(char *arg, char ***env)
 	return (0);
 }
 
-int	ft_export(char **args, t_data **all)
+int	ft_export(int fd_out, char **args, t_data **all)
 {
 	int		i;
 	char	*eq_ptr;
 	size_t	name_len;
 
 	if (!args[0])
-		put_sort_env((*all)->env);
+		put_sort_env(fd_out, (*all)->env);
 	i = 0;
 	while (args[i])
 	{

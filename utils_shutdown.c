@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/13 22:41:05 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/27 04:51:59 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/28 03:58:16 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,23 @@ static void	close_file_fds(t_token *token_data)
 		close(token_data->fd_out);
 }
 
-void	close_all(t_lst_d *token)
+void	close_current(t_lst_d *token)
 {
-	close_file_fds((t_token *)token->content);
-	if (token->next)
-	{
-		close(((t_token *)token->content)->pipefd[0]);
-		close(((t_token *)token->content)->pipefd[1]);
-	}
+	t_token	*token_data;
+
+	token_data = (t_token *)token->content;
+	close_file_fds(token_data);
 	if (token->prev)
 		close(((t_token *)token->prev->content)->pipefd[0]);
+	if (token->next)
+		close(token_data->pipefd[1]);
+}
+
+void	close_all(t_lst_d *token)
+{
+	close_current(token);
+	if (token->next)
+		close(((t_token *)token->content)->pipefd[0]);
 }
 
 static void	free_file(void *ptr)

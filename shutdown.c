@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 19:38:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/28 02:39:43 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/28 03:31:42 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,17 +111,31 @@ void	error_pipe_exit(t_lst_d *token, t_data *all)
 		close(((t_token *)token->prev->content)->pipefd[0]);
 	error_exit(all);
 }
-
-void	error_launch_builtin(t_lst_d *token, t_data *all)
+/*
+int	error_launch_builtin(t_lst_d *token, t_data *all)
 {
 	(void)all;
 	close_all(token);
+}*/
+
+int	error_launch_stop(t_lst_d *token, t_data *all)
+{
+	put_error(all);
+	if (((t_token *)token->content)->is_built_in)
+		return (-1);
+	close_all(token);
+	/*when i do error_exit(int exit_code, all)
+	error_exit
+	*/
+	close_heredocs(all->tokens);
+	free_all(all);
+	exit(1);
 }
 
 void	error_launch_exit(t_lst_d *token, t_data *all)
 {
 	close_all(token);
-	error_exit(all); 
+	error_exit(all);
 }
 
 void	error_exit(t_data *all)

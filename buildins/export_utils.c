@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 22:41:24 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/26 22:47:45 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/28 04:12:53 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,25 +49,25 @@ void	sort_environ(char **env, int left, int right)
 		sort_environ(env, left, r);
 }
 
-void	export_env(char **env)
+void	export_env(int fd_out, char **env)
 {
 	char	*eq_ptr;
 
 	while (*env)
 	{
 		eq_ptr = ft_strchr(*env, '=');
-		write(1, "declare -x ", 11);
+		write(fd_out, "declare -x ", 11);
 		if (eq_ptr)
 		{
-			write(1, *env, eq_ptr - *env + 1);
+			write(fd_out, *env, eq_ptr - *env + 1);
 			eq_ptr += 1;
-			write(1, "\"", 2);
-			write(1, eq_ptr, ft_strlen(eq_ptr));
-			write(1, "\"", 1);
+			write(fd_out, "\"", 2);
+			write(fd_out, eq_ptr, ft_strlen(eq_ptr));
+			write(fd_out, "\"", 1);
 		}
 		else
-			write(1, *env, ft_strlen(*env));
-		write(1, "\n", 1);
+			write(fd_out, *env, ft_strlen(*env));
+		write(fd_out, "\n", 1);
 		env++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/16 20:05:54 by sstyr             #+#    #+#             */
-/*   Updated: 2022/01/28 02:31:41 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/28 04:20:19 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	check_flag(char *argument)
 	return (1);
 }
 
-int	ft_echo(char **args)
+int	ft_echo(int fd_out, char **args)
 {
 	int		index;
 	int		flag;
@@ -45,12 +45,12 @@ int	ft_echo(char **args)
 		flag = 1;
 	while (args[index])
 	{
-		write(1, args[index], ft_strlen(args[index]));
+		write(fd_out, args[index], ft_strlen(args[index]));
 		if (args[index + 1])
-			write(1, " ", 1);
+			write(fd_out, " ", 1);
 		index++;
 	}
 	if (!flag)
-		write(1, "\n", 1);
+		write(fd_out, "\n", 1);
 	return (0);
 }

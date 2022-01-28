@@ -6,13 +6,13 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/16 20:06:28 by sstyr             #+#    #+#             */
-/*   Updated: 2022/01/25 23:09:39 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/28 04:07:45 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "buildins.h"
 
-int	ft_pwd(t_data *all)
+int	ft_pwd(int fd_out, t_data *all)
 {
 	char	*buffer;
 	//char	*error;
@@ -28,8 +28,9 @@ int	ft_pwd(t_data *all)
 		return (errno);
 	}
 	else
-		write(1, buffer, ft_strlen(buffer));
+		write(fd_out, buffer, ft_strlen(buffer));
 	write(1, "\n", 1);
 	free(buffer);
 	return (0);
 }
+

@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/16 20:08:12 by sstyr             #+#    #+#             */
-/*   Updated: 2022/01/26 22:43:53 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/28 04:19:36 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,17 @@ typedef struct s_env
 	char	*val;
 }			t_env;
 
-int				ft_echo(char **args);
+int				ft_echo(int fd_out, char **args);
 int				ft_cd(char **args, char ***env);
-int				ft_pwd(t_data *all);
+int				ft_pwd(int fd_out, t_data *all);
 int				ft_exit(char **args, t_data **all);
-int				ft_env(char **env);
+int				ft_env(int fd_out, char **env);
 int				ft_unset(char **args, t_data **all);
-int				ft_export(char **args, t_data **all);
+int				ft_export(int fd_out, char **args, t_data **all);
 
 void			sort_environ(char **env, int left, int right);
 void			put_error_export(char *unvalid_arg);
-void			export_env(char **env);
+void			export_env(int fd_out, char **env);
 int				find_env_var(int name_len, char *name_var, char **env);
 int				env_arg_name_is_valid(char *arg, size_t name_len);
 t_list			*read_env(char **strs);

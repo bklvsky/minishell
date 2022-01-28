@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 01:12:03 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/26 04:55:21 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/28 04:19:37 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,22 +67,22 @@ void	check_directory(char *bin_name, t_data *all)
 			all->error_message = ft_strdup("is a directory");
 }
 
-void	exec_builtin(char **cmd_args, t_data *all)
+void	exec_builtin(t_token *token, t_data *all)
 {
-	if (!ft_strncmp(cmd_args[0], "pwd", 4))
-		ft_pwd(all);
-	else if (!ft_strncmp(cmd_args[0], "cd", 3))
-		ft_cd(cmd_args + 1, &(all->env));
-	else if (!ft_strncmp(cmd_args[0], "echo", 5))
-		ft_echo(cmd_args + 1);
-	else if (!ft_strncmp(cmd_args[0], "exit", 5))
-		ft_exit(cmd_args + 1, &all);
-	else if (!ft_strncmp(cmd_args[0], "env", 4))
-		ft_env(all->env);
-	else if (!ft_strncmp(cmd_args[0], "unset", 6))
-		ft_unset(cmd_args + 1, &all);
-	else if (!ft_strncmp(cmd_args[0], "export", 7))
-		ft_export(cmd_args + 1, &all);
+	if (!ft_strncmp(token->cmd[0], "pwd", 4))
+		ft_pwd(token->fd_out, all);
+	else if (!ft_strncmp(token->cmd[0], "cd", 3))
+		ft_cd(token->cmd + 1, &(all->env));
+	else if (!ft_strncmp(token->cmd[0], "echo", 5))
+		ft_echo(token->fd_out, token->cmd + 1);
+	else if (!ft_strncmp(token->cmd[0], "exit", 5))
+		ft_exit(token->cmd + 1, &all);
+	else if (!ft_strncmp(token->cmd[0], "env", 4))
+		ft_env(token->fd_out, all->env);
+	else if (!ft_strncmp(token->cmd[0], "unset", 6))
+		ft_unset(token->cmd + 1, &all);
+	else if (!ft_strncmp(token->cmd[0], "export", 7))
+		ft_export(token->fd_out, token->cmd + 1, &all);
 	// don't exit with exit(), it happens in parents process
 }
 

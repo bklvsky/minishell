@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:55:21 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/27 02:38:14 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/28 02:27:36 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,35 +46,6 @@ static int	check_and_open(t_file *file, int *fd)
 		return (-1);
 	return (1);
 }
-
-/*
-int	get_heredoc(t_list *cur_file_data, t_token *token)
-{
-	t_file	*heredoc_data;
-	char	*input;
-	int		delimeter_len;
-
-	if (!cur_file_data->next)
-		if (pipe(token->heredoc_pipe))
-			return (-1);
-	input = readline(">");
-	heredoc_data = (t_file *)cur_file_data->content;
-	delimeter_len = ft_strlen(heredoc_data->file_name);
-	while (input && ft_strncmp(input, heredoc_data->file_name, delimeter_len + 1))
-	{
-		if (!cur_file_data->next)
-		{
-			write(token->heredoc_pipe[1], input, ft_strlen(input));
-			write(token->heredoc_pipe[1], "\n", 1);
-		}
-		free(input);
-		input = readline(">");
-	}
-	if (!cur_file_data->next)
-		close(token->heredoc_pipe[1]);
-	free(input);
-	return (0);
-}*/
 
 int	open_all_files(t_token *token, t_data *all)
 {

@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 01:40:59 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/29 16:06:48 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/29 16:51:46 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ int	write_var_in_env(char *arg, char ***env)
 	char	*eq_ptr;
 	int		env_index;
 	size_t	name_len;
+	int		res;
 
 	eq_ptr = ft_strchr(arg, '=');
 	if (eq_ptr)
@@ -64,10 +65,10 @@ int	write_var_in_env(char *arg, char ***env)
 		name_len = ft_strlen(arg);
 	env_index = find_env_var(name_len, arg, *env);
 	if (env_index > 0)
-		rewrite_env_var(env_index, arg, *env);
+		res = rewrite_env_var(env_index, arg, *env);
 	else
-		add_env_var(arg, env);
-	return (0);
+		res = add_env_var(arg, env);
+	return (res);
 }
 
 int	ft_export(int fd_out, char **args, t_data **all)
@@ -89,7 +90,10 @@ int	ft_export(int fd_out, char **args, t_data **all)
 		else
 			name_len = eq_ptr - args[i];
 		if (env_arg_name_is_valid(args[i], name_len))
-			write_var_in_env(args[i], &(*all)->env);
+		{
+			if (write_var_in_env(args[i], &(*all)->env) < 0)
+				return (-1);
+		}
 		else
 			put_error_export(args[i]);
 		i += 1;

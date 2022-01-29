@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:03:45 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/29 16:19:36 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/29 16:51:07 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,10 @@ void	launch_cmd(t_lst_d *token, t_data *all)
 	else if (pid == 0 && (redirect_fds(token, all) == 0))
 	{		
 		if (token_data->is_built_in)
-			exec_builtin(token_data, all);
+		{
+			if (exec_builtin(token_data, all) < 0)
+				error_launch_exit(token, all);
+		}
 		else
 		{
 			exec_cmd(token_data->cmd, all);

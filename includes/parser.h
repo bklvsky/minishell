@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 23:03:54 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/28 04:16:58 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/29 16:50:00 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@
 # include <sys/wait.h>
 # include <sys/stat.h>
 # include <signal.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-//# include "/Users/sstyr/.brew/Cellar/readline/8.1.1/include/readline/readline.h"
+//# include <readline/readline.h>
+//# include <readline/history.h>
+# include "/Users/dselmy/.brew/Cellar/readline/8.1.1/include/readline/readline.h"
 // # include "/Users/dselmy/.brew/Cellar/readline/8.1.1/include/readline/rlstd.h"
-//# include "/Users/sstyr/.brew/Cellar/readline/8.1.1/include/readline/history.h"
+# include "/Users/dselmy/.brew/Cellar/readline/8.1.1/include/readline/history.h"
 
 # define SINGLE_QUOTE 1
 # define DOUBLE_QUOTE 2
@@ -113,7 +113,7 @@ int		open_all_files(t_token *token, t_data *all);
 
 void	launch_minishell(t_data *all, int num_of_tokens);
 void	exec_cmd(char **cmd_args, t_data *all);
-void	exec_builtin(t_token *token, t_data *all);
+int		exec_builtin(t_token *token, t_data *all);
 void	check_directory(char *bin_name, t_data *all);
 
 int		manage_quotes(int c, int *quoted_flag);
@@ -122,6 +122,8 @@ void	skip_whitespaces(int *i, char *str);
 void	check_built_ins(t_lst_d *tokens);
 
 void	sig_int(int signal);
+void	child_sig(int signal);
+void	here_sig(int signal);
 /*delete later*/
 
 void	ft_put_read_token(void *content);

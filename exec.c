@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 01:12:03 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/28 04:19:37 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/29 16:49:39 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,11 @@ void	check_directory(char *bin_name, t_data *all)
 			all->error_message = ft_strdup("is a directory");
 }
 
-void	exec_builtin(t_token *token, t_data *all)
+int	exec_builtin(t_token *token, t_data *all)
 {
+	int		res;
+
+	res = 0;
 	if (!ft_strncmp(token->cmd[0], "pwd", 4))
 		ft_pwd(token->fd_out, all);
 	else if (!ft_strncmp(token->cmd[0], "cd", 3))
@@ -80,9 +83,10 @@ void	exec_builtin(t_token *token, t_data *all)
 	else if (!ft_strncmp(token->cmd[0], "env", 4))
 		ft_env(token->fd_out, all->env);
 	else if (!ft_strncmp(token->cmd[0], "unset", 6))
-		ft_unset(token->cmd + 1, &all);
+		res = ft_unset(token->cmd + 1, &all);
 	else if (!ft_strncmp(token->cmd[0], "export", 7))
-		ft_export(token->fd_out, token->cmd + 1, &all);
+		res = ft_export(token->fd_out, token->cmd + 1, &all);
+	return (res);
 	// don't exit with exit(), it happens in parents process
 }
 

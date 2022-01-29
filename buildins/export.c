@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 01:40:59 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/28 04:14:14 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/29 16:06:48 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,8 @@ int	ft_export(int fd_out, char **args, t_data **all)
 	char	*eq_ptr;
 	size_t	name_len;
 
+	if (!fd_out)
+		fd_out = 1;
 	if (!args[0])
 		put_sort_env(fd_out, (*all)->env);
 	i = 0;

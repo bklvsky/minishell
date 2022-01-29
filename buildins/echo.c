@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/16 20:05:54 by sstyr             #+#    #+#             */
-/*   Updated: 2022/01/28 04:20:19 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/29 16:05:50 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ int	ft_echo(int fd_out, char **args)
 
 	index = 0;
 	flag = 0;
+	if (!fd_out)
+		fd_out = 1;
 	while (args[index])
 	{
 		flag = check_flag(args[index]);

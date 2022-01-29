@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/16 20:06:28 by sstyr             #+#    #+#             */
-/*   Updated: 2022/01/28 04:07:45 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/29 16:06:17 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ int	ft_pwd(int fd_out, t_data *all)
 	buffer = NULL;
 	errno = 0;
 	buffer = getcwd(buffer, PATH_MAX);
+	if (!fd_out)
+		fd_out = 1;
 	if (!buffer)
 	{
 		write(2, "minishell: pwd: ", 16);
@@ -29,7 +31,7 @@ int	ft_pwd(int fd_out, t_data *all)
 	}
 	else
 		write(fd_out, buffer, ft_strlen(buffer));
-	write(1, "\n", 1);
+	write(fd_out, "\n", 1);
 	free(buffer);
 	return (0);
 }

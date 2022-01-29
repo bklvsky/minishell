@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   manage_redirect.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/25 16:30:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/28 02:21:59 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/29 15:43:36 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ int	get_heredoc(t_file	*file_data)
 	if (pipe(file_data->heredoc_pipe))
 		return (-1);
 	input = readline("> ");
+	signal(SIGINT, &here_sig);
 	while (input && ft_strncmp(input, file_data->file_name, delimeter_len + 1))
 	{
 		write(file_data->heredoc_pipe[1], input, ft_strlen(input));

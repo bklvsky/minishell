@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   engine.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:03:45 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/28 04:21:51 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/01/29 16:19:36 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,25 @@ int	redirect_fds(t_lst_d *token, t_data *all)
 		return (error_launch_stop(token, all));
 	if (token_data->fd_in)
 	{
-		if (!token_data->is_built_in && dup2(token_data->fd_in, 0) < 0)
+		if (!token_data->is_built_in && (dup2(token_data->fd_in, 0) < 0))
 			error_launch_exit(token, all);
 	}
-	else if (token->prev && \
+	else if (token->prev && !token_data->is_built_in &&\
 				dup2(((t_token *)token->prev->content)->pipefd[0], 0) < 0)
-		error_launch_exit(token, all);
+			error_launch_exit(token, all);
 	if (token_data->fd_out)
 	{
-		if (!token_data->is_built_in && dup2(token_data->fd_out, 1) < 0)
+		if (!token_data->is_built_in && (dup2(token_data->fd_out, 1) < 0))
 			error_launch_exit(token, all);
 	}
-	else if (token->next && dup2(token_data->pipefd[1], 1) < 0)
-		error_launch_exit(token, all);
-	else
-			token_data->fd_out = 1;
+	else if (token->next)
+	{
+		if (token_data->is_built_in)
+			token_data->fd_out = token_data->pipefd[1];
+		else if (dup2(token_data->pipefd[1], 1) < 0)
+			error_launch_exit(token, all);
+	}
+		
 	return (0);
 }
 
@@ -58,7 +62,7 @@ void	launch_cmd(t_lst_d *token, t_data *all)
 		pid = fork();
 	if (pid < 0)
 		error_launch_exit(token, all);
-	else if (pid == 0 && (redirect_fds(token, all)) == 0)
+	else if (pid == 0 && (redirect_fds(token, all) == 0))
 	{		
 		if (token_data->is_built_in)
 			exec_builtin(token_data, all);

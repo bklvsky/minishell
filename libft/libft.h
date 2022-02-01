@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/02 21:23:05 by dselmy            #+#    #+#             */
-/*   Updated: 2021/12/25 20:17:00 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/01 20:02:23 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,13 @@ typedef struct s_list
 	void			*content;
 	struct s_list	*next;
 }					t_list;
+
+typedef struct s_lst_d
+{
+	void			*content;
+	struct s_lst_d	*prev;
+	struct s_lst_d	*next;
+}					t_lst_d;
 
 void				*ft_memset(void *dest, int c, size_t n);
 
@@ -108,6 +115,20 @@ void				ft_lstiter(t_list *lst, void (*f)(void *));
 
 t_list				*ft_lstmap(t_list *lst, void *(*f)(void *), \
 					void (*del)(void*));
+
+t_lst_d				*ft_lstdouble_new(void *elem);
+
+t_lst_d				*ft_lstdouble_last(t_lst_d *lst);
+
+void				ft_lstdouble_delone(t_lst_d *lst, void (*del)(void *));
+
+void				ft_lstdouble_clear(t_lst_d **lst, void (*del)(void *));
+
+int					ft_lstdouble_size(t_lst_d *lst);
+
+void				ft_lstdouble_add_front(t_lst_d **head, t_lst_d *new);
+
+void				ft_lstdouble_add_back(t_lst_d **head, t_lst_d *new);
 
 int					get_next_line(int fd, char **line);
 

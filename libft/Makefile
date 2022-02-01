@@ -51,7 +51,14 @@ SRCS =	ft_atoi.c \
 		ft_strdup.c \
 		ft_strtrim.c \
 		ft_charmtrx_dup.c \
-		ft_strrealloc.c
+		ft_strrealloc.c \
+		ft_lstdouble_add_back.c \
+		ft_lstdouble_add_front.c \
+		ft_lstdouble_clear.c \
+		ft_lstdouble_delone.c \
+		ft_lstdouble_last.c \
+		ft_lstdouble_new.c \
+		ft_lstdouble_size.c
 
 OBJS = $(SRCS:.c=.o)
 

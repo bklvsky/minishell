@@ -67,7 +67,7 @@ t_env	*get_var_by_name(t_list **env_list, char *name)
 	while (tmp->next)
 	{
 		var = tmp->content;
-		if (ft_strncmp(var->name, name, ft_strlen(var->name)) == 0)
+		if (ft_strncmp(var->name, name, ft_strlen(name)) == 0)
 			return (var);
 		tmp = tmp->next;
 	}
@@ -97,7 +97,16 @@ char	*change_var_val(t_list **env_list, char *name, char *new_val)
 	t_env	*var;
 
 	var = get_var_by_name(env_list, name);
-	free(var->val);
-	var->val = ft_strdup(new_val);
+	if (var)
+	{
+		free(var->val);
+		var->val = ft_strdup(new_val);
+	}
+	else
+	{
+		var = malloc(sizeof(t_env));
+		var->name = ft_strdup(name);
+		var->val = ft_strdup(new_val);
+	}
 	return (var->val);
 }

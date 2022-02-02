@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/25 16:30:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/01 19:46:04 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/02 20:28:35 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,17 +65,15 @@ void	get_file_name(char *line, int *i, t_file *file_data, t_data *all)
 	*i = j;
 }
 
-int	get_heredoc(t_file	*file_data)
+void	get_heredoc_process(t_file *file_data, t_data *all)
 {
 	char	*input;
 	int		delimeter_len;
 
-	file_data->is_heredoc = 1;
 	delimeter_len = ft_strlen(file_data->name);
-	if (pipe(file_data->heredoc_pipe))
-		return (-1);
 	input = readline("> ");
 	signal(SIGINT, &here_sig);
+	close(file_data->heredoc_pipe[0]);
 	while (input && ft_strncmp(input, file_data->name, delimeter_len + 1))
 	{
 		write(file_data->heredoc_pipe[1], input, ft_strlen(input));
@@ -86,8 +84,30 @@ int	get_heredoc(t_file	*file_data)
 	if (!input)
 		printf("minishell: warning: here-document delimited \
 by end-of-file (wanted '%s')\n", file_data->name);
-	close(file_data->heredoc_pipe[1]);
 	free(input);
+	close(file_data->heredoc_pipe[1]);
+	close_heredocs(all->tokens);
+	free_all(all);
+	exit(0);
+}
+
+int	get_heredoc(t_file	*file_data, t_data *all)
+{
+	pid_t	pid;
+
+	file_data->is_heredoc = 1;
+	if (pipe(file_data->heredoc_pipe))
+		return (-1);
+	pid = fork();
+	if (pid < 0)
+		return (-1);
+	if (pid == 0)
+		get_heredoc_process(file_data, all);
+	else
+	{
+		waitpid(pid, NULL, 0);
+		close(file_data->heredoc_pipe[1]);
+	}
 	return (0);
 }
 
@@ -125,6 +145,7 @@ int	manage_redirections(int *i, t_token *cur_token, t_data *all)
 	if ((!new_file->name || !new_file->name[0]) && !flag_env_var)
 		return (-1);
 	if (new_file->type_of_redirect == DOUBLE_IN)
-		get_heredoc(new_file);
+		if (get_heredoc(new_file, all) < 0)
+			error_exit(all);
 	return (0);
 }

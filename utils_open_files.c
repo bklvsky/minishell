@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:55:21 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/02 00:54:31 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/02 20:13:56 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static int	check_and_open(t_file *file, int *fd)
 	else if (file->type_of_redirect == SIMPLE_IN)
 		*fd = open(file->name, file->open_flags);
 	else
-		fd = &(file->heredoc_pipe[0]);
+		*fd = file->heredoc_pipe[0];
 	if (*fd == -1)
 		return (-1);
 	return (1);

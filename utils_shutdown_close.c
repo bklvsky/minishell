@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/13 22:41:05 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/01 23:52:54 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/02 20:30:32 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	close_heredocs(t_lst_d *tokens)
 	t_file	*cur_file;
 
 	tmp = tokens;
-	while (tmp && !tmp->content)
+	while (tmp && tmp->content)
 	{
 		tmp_files = ((t_token *)tmp->content)->files;
 		while (tmp_files && tmp_files->content)

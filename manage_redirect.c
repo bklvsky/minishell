@@ -6,35 +6,11 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/25 16:30:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/02 20:28:35 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/02 20:29:31 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/parser.h"
-
-int	get_type_of_redirect(char *line, int *i)
-{
-	if (line[*i] == '>')
-	{
-		*i += 1;
-		if (line[*i] == '>')
-		{
-			*i += 1;
-			return (DOUBLE_OUT);
-		}
-		return (SIMPLE_OUT);
-	}
-	else
-	{
-		*i += 1;
-		if (line[*i] == '<')
-		{
-			*i += 1;
-			return (DOUBLE_IN);
-		}
-		return (SIMPLE_IN);
-	}
-}
 
 void	get_file_name(char *line, int *i, t_file *file_data, t_data *all)
 {

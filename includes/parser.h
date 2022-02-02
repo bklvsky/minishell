@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 23:03:54 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/02 18:35:29 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/02 20:31:28 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ int		write_in_cur_arg(int quoted_flag, char **arg, char *token, t_data *all);
 /*utils for parsing each token*/
 void	make_new_cmd_arg(int *i, int *cmd_i, t_token *cur_token, t_data *all);
 int		get_arg_len(int quoted_flag, char *token);
+int		get_type_of_redirect(char *line, int *i);
 
 int		manage_redirections(int *i, t_token *current_token, t_data *all);
 

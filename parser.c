@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 18:45:15 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/02 18:39:40 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/02 19:28:25 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,12 @@ static int	recognise_tokens(t_data *all)
 	tmp = all->tokens;
 	while (all->line[++i])
 	{
-	//	if (errno)
-	//		error_exit(all);
 		manage_quotes(all->line[i], &quoted_flag);
 		if (all->line[i] != '|' || quoted_flag)
-			write_in_token((t_token *)tmp->content, all->line[i]);
+		{
+			if (write_in_token((t_token *)tmp->content, all->line[i]) < 0)
+				error_exit(all);
+		}
 		else
 		{
 			new_pipe_token(all);

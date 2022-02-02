@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 16:39:46 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/01 16:54:18 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/02 20:27:07 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,28 @@ void	make_new_cmd_arg(int *i, int *cmd_i, t_token *cur_token, t_data *all)
 	if (!cur_token->cmd)
 		error_exit(all);
 	skip_whitespaces(i, cur_token->token);
+}
+
+int	get_type_of_redirect(char *line, int *i)
+{
+	if (line[*i] == '>')
+	{
+		*i += 1;
+		if (line[*i] == '>')
+		{
+			*i += 1;
+			return (DOUBLE_OUT);
+		}
+		return (SIMPLE_OUT);
+	}
+	else
+	{
+		*i += 1;
+		if (line[*i] == '<')
+		{
+			*i += 1;
+			return (DOUBLE_IN);
+		}
+		return (SIMPLE_IN);
+	}
 }

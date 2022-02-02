@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:55:21 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/28 02:27:36 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/02 00:54:31 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,14 @@ static int	check_and_open(t_file *file, int *fd)
 	if (file->ambiguous_redir)
 		return (-1);
 	if (*fd > 0)
-		close(*fd);
-	if (file->type_of_redirect == SIMPLE_OUT || file->type_of_redirect == DOUBLE_OUT)
-		*fd = open(file->file_name, file->open_flags, 00644);
+		*fd = close(*fd);
+	if (file->type_of_redirect == SIMPLE_OUT || \
+									file->type_of_redirect == DOUBLE_OUT)
+		*fd = open(file->name, file->open_flags, 00644);
 	else if (file->type_of_redirect == SIMPLE_IN)
-		*fd = open(file->file_name, file->open_flags);
+		*fd = open(file->name, file->open_flags);
 	else
-		*fd = file->heredoc_pipe[0];
+		fd = &(file->heredoc_pipe[0]);
 	if (*fd == -1)
 		return (-1);
 	return (1);
@@ -50,20 +51,23 @@ static int	check_and_open(t_file *file, int *fd)
 int	open_all_files(t_token *token, t_data *all)
 {
 	t_list	*tmp;
+	t_file	*cur_file;
 	int		res;
 
 	tmp = token->files;
 	while (tmp)
 	{
-		if (((t_file *)tmp->content)->type_of_redirect == SIMPLE_OUT || \
-		((t_file *)tmp->content)->type_of_redirect == DOUBLE_OUT)
-			res = check_and_open((t_file *)tmp->content, &(token->fd_out));
+		cur_file = (t_file *)tmp->content;
+		if (cur_file->type_of_redirect == SIMPLE_OUT || \
+		cur_file->type_of_redirect == DOUBLE_OUT)
+			res = check_and_open(cur_file, &(token->fd_out));
 		else
-			res = check_and_open((t_file *)tmp->content, &(token->fd_in));
+			res = check_and_open(cur_file, &(token->fd_in));
 		if (res < 0)
 		{
-			all->error_ident = ft_strdup(((t_file *)tmp->content)->file_name);
-			if (((t_file *)tmp->content)->ambiguous_redir)
+			all->error_exit_code = 1;
+			all->error_ident = ft_strdup((cur_file)->name);
+			if (cur_file->ambiguous_redir)
 				all->error_message = ft_strdup("ambiguous redirect");
 			return (-1);
 		}

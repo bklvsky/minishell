@@ -6,21 +6,11 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 19:38:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/28 03:31:42 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/02 00:55:26 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/parser.h"
-
-/*
-	possible scenarios of shutdowns:
-	1. from parser
-		(files not open, pipes for heredocs, pipes between processes not open)
-	2. from launcher
-		2.1 error pipe or dup
-	3. from child proccess
-		just clean everything, heredocs are already closed, the last one in fdin
-*/
 
 void	put_error(t_data *all)
 {
@@ -42,37 +32,18 @@ void	put_error(t_data *all)
 	write(2, "\n", 1);
 }
 
-void	close_heredocs(t_lst_d *tokens)
-{
-	t_lst_d	*tmp;
-	t_list	*tmp_files;
-
-	tmp = tokens;
-	while (tmp && !tmp->content)
-	{
-		tmp_files = ((t_token *)tmp->content)->files;
-		while (tmp_files && tmp_files->content)
-		{
-			if (((t_file *)tmp_files->content)->is_heredoc)
-				close(((t_file *)tmp_files->content)->heredoc_pipe[1]);
-			tmp_files = tmp_files->next;
-		}
-		tmp = tmp->next;
-	}
-}
-
 static char	*get_unexpected_token(int err_index, t_lst_d *cur_token)
 {
-	char	*err_mess;
+	char	*err_mes;
 	char	unexp[5];
 	int		i;
-	
+
 	if (err_index < 0 || !((t_token *)cur_token->content)->token[err_index])
 	{
 		if (cur_token->next)
-			err_mess = ft_strdup("syntax error near unexpected token '|'");
+			err_mes = ft_strdup("syntax error near unexpected token '|'");
 		else
-			err_mess = ft_strdup("syntax error near unexpected token 'newline'");
+			err_mes = ft_strdup("syntax error near unexpected token 'newline'");
 	}
 	else
 	{
@@ -81,15 +52,16 @@ static char	*get_unexpected_token(int err_index, t_lst_d *cur_token)
 		unexp[i] = ((t_token *)cur_token->content)->token[err_index];
 		if (((t_token *)cur_token->content)->token[err_index + 1] == unexp[i++])
 			unexp[i++] = ((t_token *)cur_token->content)->token[err_index + 1];
-		unexp[i++]='\'';
+		unexp[i++] = '\'';
 		unexp[i] = '\0';
-		err_mess = ft_strjoin("syntax error near unexpected token ", unexp);
+		err_mes = ft_strjoin("syntax error near unexpected token ", unexp);
 	}
-	return (err_mess);
+	return (err_mes);
 }
 
 int	error_syntax_exit(int err_index, t_lst_d *cur_token, t_data *all)
 {
+	all->last_exit_status = 2;
 	if (all->error_message)
 	{
 		put_error(all);
@@ -111,30 +83,26 @@ void	error_pipe_exit(t_lst_d *token, t_data *all)
 		close(((t_token *)token->prev->content)->pipefd[0]);
 	error_exit(all);
 }
-/*
-int	error_launch_builtin(t_lst_d *token, t_data *all)
-{
-	(void)all;
-	close_all(token);
-}*/
 
 int	error_launch_stop(t_lst_d *token, t_data *all)
 {
-	put_error(all);
+	if (all->error_message || all->error_ident)
+		put_error(all);
 	if (((t_token *)token->content)->is_built_in)
+	{
+		all->last_exit_status = all->error_exit_code;
 		return (-1);
+	}
 	close_all(token);
-	/*when i do error_exit(int exit_code, all)
-	error_exit
-	*/
 	close_heredocs(all->tokens);
 	free_all(all);
-	exit(1);
+	exit(all->error_exit_code);
 }
 
 void	error_launch_exit(t_lst_d *token, t_data *all)
 {
 	close_all(token);
+	close_heredocs(all->tokens);
 	error_exit(all);
 }
 
@@ -142,10 +110,8 @@ void	error_exit(t_data *all)
 {
 	if (errno || all->error_ident || all->error_message)
 		put_error(all);
-	else
-		write(1, "\n", 1);
 	if (all)
 		close_heredocs(all->tokens);
 	free_all(all);
-	exit(127);
+	exit(all->error_exit_code);
 }

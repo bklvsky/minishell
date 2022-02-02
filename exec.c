@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 01:12:03 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/29 16:49:39 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/02 00:48:09 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	find_path(char **paths_tmp, char **cmd_args, char **new_path)
 	return (0);
 }
 
-int		find_exec(char **cmd_args, char **env)
+int	find_exec(char **cmd_args, char **env)
 {
 	int		i;
 	char	**paths_tmp;
@@ -59,12 +59,16 @@ int		find_exec(char **cmd_args, char **env)
 
 void	check_directory(char *bin_name, t_data *all)
 {
-	struct stat data;
+	struct stat	data;
 
 	if (!stat(bin_name, &data))
-		if (data.st_mode & 0x4000)
-		//if (data.st_mode & S_IFDIR)
+	{
+		if (data.st_mode & S_IFDIR)
+		{
 			all->error_message = ft_strdup("is a directory");
+			all->error_exit_code = 126;
+		}
+	}
 }
 
 int	exec_builtin(t_token *token, t_data *all)
@@ -87,15 +91,19 @@ int	exec_builtin(t_token *token, t_data *all)
 	else if (!ft_strncmp(token->cmd[0], "export", 7))
 		res = ft_export(token->fd_out, token->cmd + 1, &all);
 	return (res);
-	// don't exit with exit(), it happens in parents process
 }
 
 void	exec_cmd(char **cmd_args, t_data *all)
 {
+	if (!cmd_args[0])
+		return ;
 	if (cmd_args[0][0] != '/' && cmd_args[0][0] != '.')
 	{
 		if (find_exec(cmd_args, all->env) < 0)
+		{
+			all->error_exit_code = 1;
 			return ;
+		}
 		all->error_message = ft_strdup("command not found");
 	}
 	else
@@ -106,5 +114,6 @@ void	exec_cmd(char **cmd_args, t_data *all)
 			execve(cmd_args[0], cmd_args, all->env);
 		}
 	}
+	all->error_exit_code = 127;
 	all->error_ident = ft_strdup(cmd_args[0]);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dselmy <dselmy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 01:40:59 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/29 16:51:46 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/01 16:24:07 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,13 +89,11 @@ int	ft_export(int fd_out, char **args, t_data **all)
 			name_len = ft_strlen(args[i]);
 		else
 			name_len = eq_ptr - args[i];
-		if (env_arg_name_is_valid(args[i], name_len))
-		{
+		if (!env_arg_name_is_valid(args[i], name_len))
+			put_error_export(args[i]);
+		else
 			if (write_var_in_env(args[i], &(*all)->env) < 0)
 				return (-1);
-		}
-		else
-			put_error_export(args[i]);
 		i += 1;
 	}
 	return (0);

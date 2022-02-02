@@ -6,14 +6,11 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 02:35:01 by dselmy            #+#    #+#             */
-/*   Updated: 2022/01/26 05:55:28 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/01 19:41:37 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/parser.h"
-
-/*check for permitted symbols is alnum || '_' (is digit not in the first symbol)
-if '?' ->last exit status*/
 
 char	*get_var_value(char *var_name, char **env)
 {
@@ -22,11 +19,9 @@ char	*get_var_value(char *var_name, char **env)
 	char	*eq_ptr;
 
 	i = 0;
-	if (!var_name[0])
-		return (ft_strdup("$"));
 	while (env[i])
 	{
-		eq_ptr = ft_strchr(env[i],'=');
+		eq_ptr = ft_strchr(env[i], '=');
 		if (!eq_ptr)
 			env_name = ft_strdup(env[i]);
 		else
@@ -65,6 +60,14 @@ char	*get_var_name(char *line)
 	return (ft_substr(line, 0, len_of_name));
 }
 
+static char	*get_alt_var_val(char *var_name, t_data *all)
+{
+	if (!var_name[0])
+		return (ft_strdup("$"));
+	else
+		return (ft_itoa(all->last_exit_status));
+}
+
 int	expand_env_var(char **buf, char *source, t_data *all)
 {
 	char		*var_name;
@@ -76,17 +79,14 @@ int	expand_env_var(char **buf, char *source, t_data *all)
 	if (!var_name)
 		error_exit(all);
 	var_name_len = ft_strlen(var_name);
-	if (ft_strncmp(var_name, "?", 2) == 0)
-		var_val = ft_itoa(all->last_exit_status);
+	if (!var_name[0] || ft_strncmp(var_name, "?", 2) == 0)
+		var_val = get_alt_var_val(var_name, all);
 	else
 		var_val = get_var_value(var_name, all->env);
-	if (!var_val)
-	{
-		free(var_name);
-		error_exit(all);
-	}
-	new_line = ft_strjoin(*buf, var_val);
 	free(var_name);
+	if (!var_val)
+		error_exit(all);
+	new_line = ft_strjoin(*buf, var_val);
 	free(var_val);
 	if (!new_line)
 		error_exit(all);

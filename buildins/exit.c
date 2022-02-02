@@ -51,7 +51,6 @@ static int	check_overflow(long int code, char *argument)
 	}
 	if (str_len != num_len)
 		return (1);
-
 	return (0);
 }
 
@@ -75,14 +74,15 @@ int	ft_exit(char **args, t_data **all)
 		if (!args[1])
 		{
 			while (args[0][++index])
-				if (!ft_isdigit(args[0][index]) && !(index == 0 && \
-                   (args[0][index] == '-' || args[0][index] == '+')))
-					break;
+				if (!ft_isdigit(args[0][index]) && !(index == 0 &&
+				(args[0][index] == '-' || args[0][index] == '+')))
+					break ;
 			if (args[0][index] == '\0')
 				exit(norm_exit(ft_atol(args[0]), args, all));
 			else
 				exit(error_numeric_argument(args[0], all));
-		} else
+		}
+		else
 			return (error_too_many_args());
 	}
 	exit(norm_exit(0, args, all));

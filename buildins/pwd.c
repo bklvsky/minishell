@@ -15,7 +15,6 @@
 int	ft_pwd(int fd_out, t_data *all)
 {
 	char	*buffer;
-	//char	*error;
 
 	buffer = NULL;
 	errno = 0;
@@ -26,7 +25,6 @@ int	ft_pwd(int fd_out, t_data *all)
 	{
 		write(2, "minishell: pwd: ", 16);
 		all->error_ident = ft_strdup("pwd");
-		//write(2, error, ft_strlen(error));
 		return (errno);
 	}
 	else
@@ -35,4 +33,3 @@ int	ft_pwd(int fd_out, t_data *all)
 	free(buffer);
 	return (0);
 }
-

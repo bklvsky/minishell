@@ -36,21 +36,21 @@ static int	error_cd(int mode, char *set)
 	return (1);
 }
 
-static char	*get_oldpwd(t_list *env)
+static char	*get_oldpwd(t_list **env)
 {
 	char	*old_pwd;
 
-	old_pwd = get_val_by_name(&env, "PWD");
+	old_pwd = get_val_by_name(*env, "PWD");
 	if (old_pwd)
 	{
-		old_pwd = change_var_val(&env, "OLDPWD", old_pwd);
+		old_pwd = change_var_val(env, "OLDPWD", old_pwd);
 		if (!old_pwd)
 			return (NULL);
 	}
 	return (old_pwd);
 }
 
-static int	get_pwd(char **pwd, t_list *env)
+static int	get_pwd(char **pwd, t_list **env)
 {
 	char	*error;
 	char	*temp;
@@ -66,7 +66,7 @@ static int	get_pwd(char **pwd, t_list *env)
 		return (errno);
 	}
 	temp = *pwd;
-	*pwd = change_var_val(&env, "PWD", *pwd);
+	*pwd = change_var_val(env, "PWD", *pwd);
 	if (!(*pwd))
 	{
 		*pwd = NULL;
@@ -77,7 +77,7 @@ static int	get_pwd(char **pwd, t_list *env)
 	return (0);
 }
 
-static int	cd_to_dir(t_list *env, char *directory)
+static int	cd_to_dir(t_list **env, char *directory)
 {
 	char	*old_pwd;
 	char	*pwd;
@@ -108,17 +108,17 @@ int	ft_cd(char **args, char ***env)
 	dir = args[0];
 	if (!args[0])
 	{
-		dir = get_val_by_name(&env_list, "HOME");
+		dir = get_val_by_name(env_list, "HOME");
 		if (!dir)
 			return (error_cd(3, "HOME"));
 	}
 	if (args[0] && !ft_strncmp(args[0], "-", 2))
 	{
-		dir = get_val_by_name(&env_list, "OLDPWD");
+		dir = get_val_by_name(env_list, "OLDPWD");
 		if (!dir)
 			return (error_cd(3, "OLDPWD"));
 	}
-	res = cd_to_dir(env_list, dir);
+	res = cd_to_dir(&env_list, dir);
 	ft_free_charmtrx(*env);
 	*env = env_to_strs(&env_list);
 	clear_env(&env_list);

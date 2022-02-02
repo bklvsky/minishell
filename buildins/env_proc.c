@@ -40,15 +40,13 @@ t_list	*read_env(char **strs)
 	return (env_list);
 }
 
-void	print_env(t_list **env_list)
+void	print_env(t_list *env_list)
 {
 	t_list	*tmp;
 	t_env	*var;
 
-	tmp = NULL;
-	if (*env_list)
-		tmp = *env_list;
-	while (tmp->next)
+	tmp = env_list;
+	while (tmp)
 	{
 		var = tmp->content;
 		printf("%s = %s\n", var->name, var->val);
@@ -56,33 +54,31 @@ void	print_env(t_list **env_list)
 	}
 }
 
-t_env	*get_var_by_name(t_list **env_list, char *name)
+t_env	*get_var_by_name(t_list *env_list, char *name)
 {
 	t_list	*tmp;
 	t_env	*var;
 
-	tmp = NULL;
-	if (*env_list)
-		tmp = *env_list;
-	while (tmp->next)
+	tmp = env_list;
+	while (tmp)
 	{
 		var = tmp->content;
 		if (ft_strncmp(var->name, name, ft_strlen(name)) == 0)
+		{
 			return (var);
+		}
 		tmp = tmp->next;
 	}
 	return (NULL);
 }
 
-char	*get_val_by_name(t_list **env_list, char *name)
+char	*get_val_by_name(t_list *env_list, char *name)
 {
 	t_list	*tmp;
 	t_env	*var;
 
-	tmp = NULL;
-	if (*env_list)
-		tmp = *env_list;
-	while (tmp->next)
+	tmp = env_list;
+	while (tmp)
 	{
 		var = tmp->content;
 		if (ft_strncmp(var->name, name, ft_strlen(var->name)) == 0)
@@ -96,16 +92,17 @@ char	*change_var_val(t_list **env_list, char *name, char *new_val)
 {
 	t_env	*var;
 
-	var = get_var_by_name(env_list, name);
-	if (var)
-	{
-		free(var->val);
-		var->val = ft_strdup(new_val);
-	}
-	else
+	var = get_var_by_name(*env_list, name);
+	if (!var)
 	{
 		var = malloc(sizeof(t_env));
 		var->name = ft_strdup(name);
+		var->val = ft_strdup(new_val);
+		ft_lstadd_back(env_list, ft_lstnew(var));
+	}
+	else
+	{
+		free(var->val);
 		var->val = ft_strdup(new_val);
 	}
 	return (var->val);

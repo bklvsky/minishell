@@ -48,7 +48,6 @@ void	get_heredoc_process(t_file *file_data, t_data *all)
 
 	delim_len = ft_strlen(file_data->name);
 	close(file_data->heredoc_pipe[0]);
-	signal(SIGINT, &here_sig);
 	while (1)
 	{
 		input = readline("> ");
@@ -76,7 +75,9 @@ int	get_heredoc(t_file	*file_data, t_data *all)
 	file_data->is_heredoc = 1;
 	if (pipe(file_data->heredoc_pipe))
 		return (-1);
+	signal(SIGINT, SIG_IGN);
 	pid = fork();
+	signal(SIGINT, &here_sig);
 	if (pid < 0)
 		return (-1);
 	if (pid == 0)

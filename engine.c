@@ -52,7 +52,11 @@ void	launch_cmd(t_lst_d *token, t_data *all)
 		if (pipe(cur_tok->pipefd))
 			error_pipe_exit(token, all);
 	if (!cur_tok->is_built_in)
+	{
 		pid = fork();
+		signal(SIGINT, &child_sig);
+		signal(SIGQUIT, &child_sig);
+	}
 	if (pid < 0)
 		error_launch_exit(token, all);
 	if (pid == 0 && redirect_fds(token, all) == 0)

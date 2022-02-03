@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/25 16:30:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/02 20:29:31 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/03 15:31:44 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,18 +44,19 @@ void	get_file_name(char *line, int *i, t_file *file_data, t_data *all)
 void	get_heredoc_process(t_file *file_data, t_data *all)
 {
 	char	*input;
-	int		delimeter_len;
+	int		delim_len;
 
-	delimeter_len = ft_strlen(file_data->name);
-	input = readline("> ");
-	signal(SIGINT, &here_sig);
+	delim_len = ft_strlen(file_data->name);
 	close(file_data->heredoc_pipe[0]);
-	while (input && ft_strncmp(input, file_data->name, delimeter_len + 1))
+	signal(SIGINT, &here_sig);
+	while (1)
 	{
+		input = readline("> ");
+		if (!input || ft_strncmp(input, file_data->name, delim_len + 1) == 0)
+			break ;
 		write(file_data->heredoc_pipe[1], input, ft_strlen(input));
 		write(file_data->heredoc_pipe[1], "\n", 1);
 		free(input);
-		input = readline("> ");
 	}
 	if (!input)
 		printf("minishell: warning: here-document delimited \
@@ -70,6 +71,7 @@ by end-of-file (wanted '%s')\n", file_data->name);
 int	get_heredoc(t_file	*file_data, t_data *all)
 {
 	pid_t	pid;
+	int		exit_status;
 
 	file_data->is_heredoc = 1;
 	if (pipe(file_data->heredoc_pipe))
@@ -81,8 +83,10 @@ int	get_heredoc(t_file	*file_data, t_data *all)
 		get_heredoc_process(file_data, all);
 	else
 	{
-		waitpid(pid, NULL, 0);
+		waitpid(pid, &exit_status, 0);
 		close(file_data->heredoc_pipe[1]);
+		if (exit_status)
+			all->interrupted = 1;
 	}
 	return (0);
 }
@@ -123,5 +127,5 @@ int	manage_redirections(int *i, t_token *cur_token, t_data *all)
 	if (new_file->type_of_redirect == DOUBLE_IN)
 		if (get_heredoc(new_file, all) < 0)
 			error_exit(all);
-	return (0);
+	return (all->interrupted);
 }

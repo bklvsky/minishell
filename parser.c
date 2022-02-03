@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 18:45:15 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/02 19:28:25 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/03 15:16:57 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	parser(t_data *all)
 {
 	if (recognise_tokens(all) < 0)
 		return (-1);
-	if (parse_token(all) < 0)
+	if (parse_token(all))
 		return (-1);
 	check_built_ins(all->tokens);
 	return (0);

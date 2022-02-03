@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 23:03:54 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/02 20:31:28 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/03 15:36:47 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ typedef struct s_data
 	char	*error_ident;
 	char	*error_message;
 	int		error_exit_code;
+	int		interrupted;
 }			t_data;
 
 # include "../buildins/buildins.h"

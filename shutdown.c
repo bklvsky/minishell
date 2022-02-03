@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 19:38:10 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/02 00:55:26 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/03 15:36:08 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ void	error_pipe_exit(t_lst_d *token, t_data *all)
 
 int	error_launch_stop(t_lst_d *token, t_data *all)
 {
+	int		exit_code;
+	
 	if (all->error_message || all->error_ident)
 		put_error(all);
 	if (((t_token *)token->content)->is_built_in)
@@ -95,8 +97,9 @@ int	error_launch_stop(t_lst_d *token, t_data *all)
 	}
 	close_all(token);
 	close_heredocs(all->tokens);
+	exit_code = all->error_exit_code;
 	free_all(all);
-	exit(all->error_exit_code);
+	exit(exit_code);
 }
 
 void	error_launch_exit(t_lst_d *token, t_data *all)
@@ -108,10 +111,13 @@ void	error_launch_exit(t_lst_d *token, t_data *all)
 
 void	error_exit(t_data *all)
 {
+	int		exit_code;
+
 	if (errno || all->error_ident || all->error_message)
 		put_error(all);
 	if (all)
 		close_heredocs(all->tokens);
+	exit_code = all->error_exit_code;
 	free_all(all);
-	exit(all->error_exit_code);
+	exit(exit_code);
 }

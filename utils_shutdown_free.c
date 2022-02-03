@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 19:49:24 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/02 00:21:08 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/03 15:03:26 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	free_cmd(t_data *all)
 {
 	if (all)
 	{
+		close_heredocs(all->tokens);
 		free(all->error_ident);
 		all->error_ident = NULL;
 		free(all->error_message);
@@ -47,6 +48,8 @@ void	free_cmd(t_data *all)
 		all->line = NULL;
 		ft_lstdouble_clear(&(all->tokens), &free_token);
 		all->tokens = NULL;
+		all->error_exit_code = 0;
+		all->interrupted = 0;
 	}
 }
 

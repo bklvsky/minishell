@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/24 19:01:12 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/02 00:33:33 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/03 15:16:42 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	read_token(t_token *c_tok, t_data *all)
 			i += write_in_cur_arg(q_flag, c_tok->cmd + cmd_i, \
 													c_tok->token + i, all);
 		else
-			if (manage_redirections(&i, c_tok, all) < 0)
+			if (manage_redirections(&i, c_tok, all))
 				return (i);
 	}
 	return (0);
@@ -77,7 +77,11 @@ int	parse_token(t_data *all)
 			return (error_syntax_exit(-1, tmp, all));
 		err_index = read_token(cur_token, all);
 		if (err_index)
+		{
+			if (all->interrupted)
+				return (1);
 			return (error_syntax_exit(err_index, tmp, all));
+		}
 		tmp = tmp->next;
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/13 22:41:05 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/02 20:30:32 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/03 15:40:01 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	close_heredocs(t_lst_d *tokens)
 		while (tmp_files && tmp_files->content)
 		{
 			cur_file = (t_file *)tmp_files->content;
-			if (cur_file->is_heredoc && cur_file->heredoc_pipe[0] > 0)
+			if (cur_file->is_heredoc && cur_file->heredoc_pipe[0] > 2)
 				close(cur_file->heredoc_pipe[0]);
 			tmp_files = tmp_files->next;
 		}

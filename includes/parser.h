@@ -36,6 +36,8 @@
 # define DOUBLE_IN 4
 # define HEREDOC_FD -2
 
+int stop_here_loop;
+
 typedef struct s_file
 {
 	char		*name;

@@ -48,7 +48,8 @@ void	get_heredoc_process(t_file *file_data, t_data *all)
 
 	delim_len = ft_strlen(file_data->name);
 	close(file_data->heredoc_pipe[0]);
-	while (1)
+	stop_here_loop = 1;
+	while (stop_here_loop)
 	{
 		input = readline("> ");
 		if (!input || ft_strncmp(input, file_data->name, delim_len + 1) == 0)

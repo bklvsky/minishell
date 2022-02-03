@@ -2,7 +2,6 @@
 
 void	sig_int(int signal)
 {
-	printf("sig_int\n");
 	if (signal == SIGINT)
 	{
 		printf("\n");
@@ -17,9 +16,7 @@ void	here_sig(int signal)
 	printf("heresig\n");
 	if (signal == SIGINT)
 	{
-		(void)signal;
-		write(1, "\n", 1);
-		exit(1);
+		stop_here_loop = 0;
 		printf("\n");
 		rl_on_new_line();
 		rl_replace_line("", 1);

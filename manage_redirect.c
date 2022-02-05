@@ -48,8 +48,7 @@ void	get_heredoc_process(t_file *file_data, t_data *all)
 
 	delim_len = ft_strlen(file_data->name);
 	close(file_data->heredoc_pipe[0]);
-	stop_here_loop = 1;
-	while (stop_here_loop)
+	while (1)
 	{
 		input = readline("> ");
 		if (!input || ft_strncmp(input, file_data->name, delim_len + 1) == 0)
@@ -59,9 +58,11 @@ void	get_heredoc_process(t_file *file_data, t_data *all)
 		free(input);
 	}
 	if (!input)
+	{
 		printf("minishell: warning: here-document delimited \
 by end-of-file (wanted '%s')\n", file_data->name);
-	free(input);
+		free(input);
+	}
 	close(file_data->heredoc_pipe[1]);
 	close_heredocs(all->tokens);
 	free_all(all);
@@ -78,15 +79,19 @@ int	get_heredoc(t_file	*file_data, t_data *all)
 		return (-1);
 	signal(SIGINT, SIG_IGN);
 	pid = fork();
-	signal(SIGINT, &here_sig);
 	if (pid < 0)
 		return (-1);
 	if (pid == 0)
+	{
+		rl_catch_signals = 1;
+		signal(SIGINT, &here_sig);
 		get_heredoc_process(file_data, all);
+	}
 	else
 	{
 		waitpid(pid, &exit_status, 0);
 		close(file_data->heredoc_pipe[1]);
+		signal(SIGINT, &sig_int);
 		if (exit_status)
 			all->interrupted = 1;
 	}

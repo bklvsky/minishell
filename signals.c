@@ -13,14 +13,10 @@ void	sig_int(int signal)
 
 void	here_sig(int signal)
 {
-	printf("heresig\n");
 	if (signal == SIGINT)
 	{
-		stop_here_loop = 0;
-		printf("\n");
-		rl_on_new_line();
-		rl_replace_line("", 1);
-		rl_redisplay();
+		(void)signal;
+		exit(0);
 	}
 }
 

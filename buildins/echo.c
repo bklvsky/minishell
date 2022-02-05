@@ -12,6 +12,12 @@
 
 #include "buildins.h"
 
+static void	check_fd_out(int *fd_out)
+{
+	if (!*fd_out)
+		*fd_out = 1;
+}
+
 static int	check_flag(char *argument)
 {
 	int		index;
@@ -34,8 +40,7 @@ int	ft_echo(int fd_out, char **args)
 
 	index = 0;
 	flag = 0;
-	if (!fd_out)
-		fd_out = 1;
+	check_fd_out(&fd_out);
 	while (args[index])
 	{
 		flag = check_flag(args[index]);

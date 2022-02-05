@@ -42,6 +42,6 @@ void	child_sig(int signal)
 	else if (signal == SIGQUIT)
 	{
 		(void)signal;
-		write(2, "Quit:\n", 6);
+		write(2, "Quit: 3\n", 8);
 	}
 }

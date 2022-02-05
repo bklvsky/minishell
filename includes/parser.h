@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 23:03:54 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/03 15:36:47 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/05 17:31:21 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@
 # include <sys/wait.h>
 # include <sys/stat.h>
 # include <signal.h>
-//# include <readline/readline.h>
-//# include <readline/history.h>
-# include "/Users/sstyr/.brew/Cellar/readline/8.1.1/include/readline/readline.h"
+# include <readline/readline.h>
+# include <readline/history.h>
+//# include "/Users/sstyr/.brew/Cellar/readline/8.1.1/include/readline/readline.h"
 // # include "/Users/dselmy/.brew/Cellar/readline/8.1.1/include/readline/rlstd.h"
-# include "/Users/sstyr/.brew/Cellar/readline/8.1.1/include/readline/history.h"
+//# include "/Users/sstyr/.brew/Cellar/readline/8.1.1/include/readline/history.h"
 
 # define SINGLE_QUOTE 1
 # define DOUBLE_QUOTE 2
@@ -70,8 +70,6 @@ typedef struct s_data
 	int		interrupted;
 }			t_data;
 
-# include "../buildins/buildins.h"
-
 void	init_struct_first(t_data **all, char **env);
 void	init_data(t_data *all, char *input);
 
@@ -83,7 +81,6 @@ int		parser(t_data *all);
 
 int		write_in_cur_arg(int quoted_flag, char **arg, char *token, t_data *all);
 
-/*utils for parsing each token*/
 void	make_new_cmd_arg(int *i, int *cmd_i, t_token *cur_token, t_data *all);
 int		get_arg_len(int quoted_flag, char *token);
 int		get_type_of_redirect(char *line, int *i);
@@ -103,6 +100,8 @@ void	free_cmd(t_data *all);
 void	close_all(t_lst_d *token);
 void	close_current(t_lst_d *token);
 void	close_heredocs(t_lst_d *tokens);
+void	put_error(t_data *all);
+char	*get_unexpected_token(int err_index, t_lst_d *cur_token);
 
 int		get_open_flags(int type_of_redirect);
 int		open_all_files(t_token *token, t_data *all);

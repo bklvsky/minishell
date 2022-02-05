@@ -6,11 +6,12 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 01:12:03 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/02 00:48:09 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/02/05 17:18:33 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/parser.h"
+#include "./buildins/buildins.h"
 
 int	find_path(char **paths_tmp, char **cmd_args, char **new_path)
 {

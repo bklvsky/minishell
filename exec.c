@@ -74,24 +74,21 @@ void	check_directory(char *bin_name, t_data *all)
 
 int	exec_builtin(t_token *token, t_data *all)
 {
-	int		res;
-
-	res = 0;
 	if (!ft_strncmp(token->cmd[0], "pwd", 4))
-		ft_pwd(token->fd_out, all);
+		all->last_exit_status = ft_pwd(token->fd_out, all);
 	else if (!ft_strncmp(token->cmd[0], "cd", 3))
-		ft_cd(token->cmd + 1, &(all->env));
+		all->last_exit_status = ft_cd(token->cmd + 1, &(all->env));
 	else if (!ft_strncmp(token->cmd[0], "echo", 5))
-		ft_echo(token->fd_out, token->cmd + 1);
+		all->last_exit_status = ft_echo(token->fd_out, token->cmd + 1);
 	else if (!ft_strncmp(token->cmd[0], "exit", 5))
-		ft_exit(token->cmd + 1, &all);
+		all->last_exit_status = ft_exit(token->cmd + 1, &all);
 	else if (!ft_strncmp(token->cmd[0], "env", 4))
-		ft_env(token->fd_out, all->env);
+		all->last_exit_status = ft_env(token->fd_out, all->env);
 	else if (!ft_strncmp(token->cmd[0], "unset", 6))
-		res = ft_unset(token->cmd + 1, &all);
+		all->last_exit_status = ft_unset(token->cmd + 1, &all);
 	else if (!ft_strncmp(token->cmd[0], "export", 7))
-		res = ft_export(token->fd_out, token->cmd + 1, &all);
-	return (res);
+		all->last_exit_status = ft_export(token->fd_out, token->cmd + 1, &all);
+	return (all->last_exit_status);
 }
 
 void	exec_cmd(char **cmd_args, t_data *all)

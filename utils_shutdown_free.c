@@ -48,6 +48,9 @@ void	free_cmd(t_data *all)
 		all->line = NULL;
 		ft_lstdouble_clear(&(all->tokens), &free_token);
 		all->tokens = NULL;
+		if (g_exit_status)
+			all->last_exit_status = g_exit_status;
+		g_exit_status = 0;
 		all->error_exit_code = 0;
 		all->interrupted = 0;
 	}

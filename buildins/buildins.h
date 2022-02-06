@@ -35,7 +35,7 @@ int				ft_unset(char **args, t_data **all);
 int				ft_export(int fd_out, char **args, t_data **all);
 
 void			sort_environ(char **env, int left, int right);
-void			put_error_export(char *unvalid_arg);
+int				put_error_export(char *unvalid_arg);
 void			export_env(int fd_out, char **env);
 int				find_env_var(int name_len, char *name_var, char **env);
 int				env_arg_name_is_valid(char *arg, size_t name_len);

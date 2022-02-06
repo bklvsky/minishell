@@ -34,7 +34,8 @@
 # define DOUBLE_OUT 2
 # define SIMPLE_IN 3
 # define DOUBLE_IN 4
-# define HEREDOC_FD -2
+
+int	g_exit_status;
 
 typedef struct s_file
 {

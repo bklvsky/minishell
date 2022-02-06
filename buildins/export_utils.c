@@ -72,10 +72,11 @@ void	export_env(int fd_out, char **env)
 	}
 }
 
-void	put_error_export(char *unvalid_arg)
+int	put_error_export(char *unvalid_arg)
 {
 	write(2, "minishell: export: ", 19);
 	write(2, "'", 1);
 	write(2, unvalid_arg, ft_strlen(unvalid_arg));
 	write(2, "': not a valid identifier\n", 26);
+	return (1);
 }

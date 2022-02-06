@@ -18,6 +18,7 @@ int	main(int argc, char **argv, char **envp)
 	char	*inpt;
 
 	rl_catch_signals = 0;
+	g_exit_status = 0;
 	if (argc == 1)
 	{
 		init_struct_first(&all, envp);
@@ -36,7 +37,6 @@ int	main(int argc, char **argv, char **envp)
 			free_cmd(all);
 		}
 	}
-	else
-		unknown_arguments(argc, argv);
+	unknown_arguments(argc, argv);
 	return (0);
 }

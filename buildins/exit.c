@@ -58,6 +58,8 @@ static long int	norm_exit(long int code, char **args, t_data **all)
 {
 	if (args[0] && check_overflow(code, args[0]))
 		return (error_numeric_argument(args[0], all));
+	if (!args[0])
+		code = (*all)->last_exit_status;
 	write(2, "exit\n", 6);
 	free_all(*all);
 	return (code);

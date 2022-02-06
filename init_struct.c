@@ -24,6 +24,9 @@ void	init_struct_first(t_data **all, char **env)
 
 void	init_data(t_data *all, char *input)
 {
+	if (g_exit_status)
+		all->last_exit_status = g_exit_status;
+	g_exit_status = 0;
 	(all)->tokens = new_token();
 	(all)->line = input;
 	if (!(all)->tokens || !(all)->line)

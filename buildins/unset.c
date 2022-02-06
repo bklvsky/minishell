@@ -69,20 +69,23 @@ static int	del_var(int index_to_del, char ***env)
 	return (0);
 }
 
-static void	put_error_unset(char *unvalid_arg)
+static int	put_error_unset(char *unvalid_arg)
 {
 	write(2, "minishell: unset: ", 18);
 	write(2, "'", 1);
 	write(2, unvalid_arg, ft_strlen(unvalid_arg));
 	write(2, "': not a valid identifier\n", 26);
+	return (1);
 }
 
 int	ft_unset(char **args, t_data **all)
 {
 	int		i;
 	int		env_index;
+	int		exit_status;
 
 	i = 0;
+	exit_status = 0;
 	while (args[i])
 	{
 		if (env_arg_name_is_valid(args[i], ft_strlen(args[i])))
@@ -93,8 +96,8 @@ int	ft_unset(char **args, t_data **all)
 					return (-1);
 		}
 		else
-			put_error_unset(args[i]);
+			exit_status = put_error_unset(args[i]);
 		i += 1;
 	}
-	return (0);
+	return (exit_status);
 }

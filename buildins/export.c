@@ -76,7 +76,9 @@ int	ft_export(int fd_out, char **args, t_data **all)
 	int		i;
 	char	*eq_ptr;
 	size_t	name_len;
+	int		exit_status;
 
+	exit_status = 0;
 	if (!fd_out)
 		fd_out = 1;
 	if (!args[0])
@@ -90,11 +92,10 @@ int	ft_export(int fd_out, char **args, t_data **all)
 		else
 			name_len = eq_ptr - args[i];
 		if (!env_arg_name_is_valid(args[i], name_len))
-			put_error_export(args[i]);
-		else
-			if (write_var_in_env(args[i], &(*all)->env) < 0)
-				return (-1);
+			exit_status = put_error_export(args[i]);
+		else if (write_var_in_env(args[i], &(*all)->env) < 0)
+			return (-1);
 		i += 1;
 	}
-	return (0);
+	return (exit_status);
 }

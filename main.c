@@ -26,7 +26,7 @@ int	main(int argc, char **argv, char **envp)
 		{
 			signal(SIGQUIT, SIG_IGN);
 			signal(SIGINT, &sig_int);
-			inpt = readline("minishell: ");
+			inpt = readline("minishell$ ");
 			init_data(all, inpt);
 			if (*inpt)
 			{

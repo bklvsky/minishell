@@ -14,22 +14,15 @@
 
 int	ft_env(int fd_out, char **env)
 {
-	char	**strs;
-
-	strs = NULL;
 	if (!fd_out)
 		fd_out = 1;
 	while (*env)
 	{
-		strs = ft_split(*env, '=');
-		if (strs[1])
+		if (ft_strchr(*env, '='))
 		{
 			write(fd_out, *env, ft_strlen(*env));
 			write(fd_out, "\n", 1);
 		}
-		free(strs[0]);
-		free(strs[1]);
-		free(strs);
 		env++;
 	}
 	return (0);

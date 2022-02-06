@@ -15,6 +15,7 @@ NAME = minishell
 INC_DIR = ./includes/
 BUILDINS_DIR = ./buildins/
 LIBFT_DIR = ./libft/
+RL_DIR = /Users/sstyr/.brew/Cellar/readline/8.1.1/lib
 
 SRCS =	engine.c \
 		exec.c \
@@ -56,7 +57,8 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 		@make -C $(LIBFT_DIR)
-		gcc -o $(NAME) $(CFLAGS) -I$(BUILDINS_DIR) -I$(INC_DIR) $(OBJ) $(LIBFT_DIR)libft.a -lreadline
+		gcc -o $(NAME) $(CFLAGS) -I$(BUILDINS_DIR) -I$(INC_DIR) $(OBJ) \
+		$(LIBFT_DIR)libft.a -L$(RL_DIR) -lreadline
 
 %.o:	%.c
 		gcc -c $(CFLAGS) -I$(BUILDINS_DIR) -I$(INC_DIR) $< -o $@ -MD

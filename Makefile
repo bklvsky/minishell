@@ -6,7 +6,7 @@
 #    By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/27 21:46:39 by dselmy            #+#    #+#              #
-#    Updated: 2022/02/05 17:32:44 by dselmy           ###   ########.fr        #
+#    Updated: 2022/06/30 18:07:36 by dselmy           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,6 @@ NAME = minishell
 INC_DIR = ./includes/
 BUILDINS_DIR = ./buildins/
 LIBFT_DIR = ./libft/
-RL_DIR = /Users/sstyr/.brew/Cellar/readline/8.1.1/lib
 
 SRCS =	engine.c \
 		exec.c \
@@ -58,7 +57,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 		@make -C $(LIBFT_DIR)
 		gcc -o $(NAME) $(CFLAGS) -I$(BUILDINS_DIR) -I$(INC_DIR) $(OBJ) \
-		$(LIBFT_DIR)libft.a -L$(RL_DIR) -lreadline
+		$(LIBFT_DIR)libft.a -lreadline
 
 %.o:	%.c
 		gcc -c $(CFLAGS) -I$(BUILDINS_DIR) -I$(INC_DIR) $< -o $@ -MD

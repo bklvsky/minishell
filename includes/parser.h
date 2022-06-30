@@ -6,7 +6,7 @@
 /*   By: dselmy <dselmy@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 23:03:54 by dselmy            #+#    #+#             */
-/*   Updated: 2022/02/05 17:31:21 by dselmy           ###   ########.fr       */
+/*   Updated: 2022/06/30 13:24:32 by dselmy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 # include <sys/wait.h>
 # include <sys/stat.h>
 # include <signal.h>
-# include "/Users/sstyr/.brew/Cellar/readline/8.1.1/include/readline/readline.h"
-# include "/Users/sstyr/.brew/Cellar/readline/8.1.1/include/readline/history.h"
+# include <readline/readline.h>
+# include <readline/history.h>
 
 # define SINGLE_QUOTE 1
 # define DOUBLE_QUOTE 2
